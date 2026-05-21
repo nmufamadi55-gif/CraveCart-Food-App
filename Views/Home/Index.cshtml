@@ -1,0 +1,914 @@
+﻿@{
+    ViewData["Title"] = "CraveCart";
+}
+@model List<CraveCart.Models.Restaurant>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CraveCart - Food Delivery</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: #FF6B35;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .cart-btn {
+            background: white;
+            color: #FF6B35;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+
+        .cart-count {
+            background: #FF6B35;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            margin-left: 8px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .category {
+            margin-bottom: 40px;
+        }
+
+        .category-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+            border-left: 5px solid #FF6B35;
+            padding-left: 15px;
+        }
+
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .restaurant-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+            .restaurant-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            }
+
+        .restaurant-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .restaurant-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .restaurant-rating {
+            color: #FFB800;
+            margin-bottom: 5px;
+        }
+
+        .restaurant-time {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .menu-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+            .menu-item:hover {
+                background: #f9f9f9;
+            }
+
+        .menu-item-info h4 {
+            margin-bottom: 5px;
+        }
+
+        .menu-item-info p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .menu-price {
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        .add-btn {
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            right: -420px;
+            top: 0;
+            width: 420px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s;
+            z-index: 200;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+            .cart-sidebar.open {
+                right: 0;
+            }
+
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            margin-bottom: 10px;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+        }
+
+        .cart-extras {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            float: right;
+        }
+
+        .summary {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        .promo-group,
+        .points-group {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+            .promo-group input,
+            .points-group input {
+                flex: 1;
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+            }
+
+        .payment-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .place-order-btn {
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .notification-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 12px;
+            border-left: 4px solid #FF6B35;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+            .notification-panel h4 {
+                margin-bottom: 10px;
+                color: #333;
+                font-size: 14px;
+            }
+
+        .notification-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .notification-time {
+            color: #999;
+            font-size: 10px;
+            margin-right: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: none;
+            z-index: 300;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 150;
+        }
+
+            .overlay.active {
+                display: block;
+            }
+
+        .custom-option {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+            .custom-option input {
+                margin-right: 10px;
+            }
+
+        .save-load-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        /* Driver Tracking Floating Panel */
+        .driver-floating-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 320px;
+            background: #2c3e50;
+            border-radius: 12px;
+            color: white;
+            padding: 15px;
+            z-index: 250;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            border-left: 4px solid #FF6B35;
+        }
+
+            .driver-floating-panel h4 {
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+
+        .driver-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .driver-label {
+            font-weight: bold;
+            opacity: 0.8;
+        }
+
+        .driver-value {
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        .progress-bar-container {
+            background: #555;
+            height: 6px;
+            border-radius: 3px;
+            margin: 8px 0;
+        }
+
+        .progress-bar {
+            background: #FF6B35;
+            height: 6px;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2ecc71;
+            margin-right: 6px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .close-driver {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+            .close-driver:hover {
+                opacity: 1;
+            }
+
+        keyframes pulse {
+            0%
+
+        {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(1.2);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        }
+
+        media (max-width: 768px) {
+            .cart-sidebar
+
+        {
+            width: 100%;
+            right: -100%;
+        }
+
+        .restaurant-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-content {
+            width: 95%;
+        }
+
+        .driver-floating-panel {
+            width: 90%;
+            left: 5%;
+            bottom: 10px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">🍔 CraveCart</div>
+        <button class="cart-btn" onclick="toggleCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+
+    <div class="container" id="restaurantsContainer"></div>
+
+    <!-- Restaurant Modal -->
+    <div id="restaurantModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="menuList"></div>
+        </div>
+    </div>
+
+    <!-- Customization Modal -->
+    <div id="customModal" class="modal">
+        <div class="modal-content" id="customContent"></div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="cart-sidebar">
+        <h3>🛒 Your Cart</h3>
+        <div id="cartItems"></div>
+        <div id="cartSummary"></div>
+
+        <!-- Save/Load Buttons -->
+        <div class="save-load-buttons">
+            <button onclick="saveCart()" style="flex:1; background:#3498db; color:white; padding:8px; border:none; border-radius:8px; cursor:pointer;">💾 Save Cart</button>
+            <button onclick="loadCartSave()" style="flex:1; background:#2ecc71; color:white; padding:8px; border:none; border-radius:8px; cursor:pointer;">📂 Load Cart</button>
+        </div>
+
+        <!-- NOTIFICATION PANEL -->
+        <div id="notificationPanel" class="notification-panel">
+            <h4>📋 Order Status</h4>
+            <div id="orderNotifications"></div>
+        </div>
+
+        <button onclick="clearCart()" style="width:100%; margin-top:10px; background:#ccc; color:#333; padding:10px; border:none; border-radius:8px; cursor:pointer;">🗑️ Clear Cart</button>
+        <button onclick="closeCart()" style="width:100%; margin-top:10px; background:#ddd; padding:10px; border:none; border-radius:8px; cursor:pointer;">✕ Close</button>
+    </div>
+
+    <!-- Driver Tracking Floating Panel  -->
+    <div id="driverFloatingPanel" class="driver-floating-panel">
+        <button class="close-driver" onclick="closeDriverPanel()">✕</button>
+        <h4>🚚 Live Driver Tracking</h4>
+        <div class="driver-info-row">
+            <span class="driver-label">👨‍✈️ Driver:</span>
+            <span class="driver-value" id="driverName">-</span>
+        </div>
+        <div class="driver-info-row">
+            <span class="driver-label">📍 Status:</span>
+            <span class="driver-value" id="driverStatus">-</span>
+        </div>
+        <div class="driver-info-row">
+            <span class="driver-label">⏱️ ETA:</span>
+            <span class="driver-value" id="driverEta">-</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="etaProgress"></div>
+        </div>
+        <div id="driverHistory" style="margin-top: 8px; font-size: 10px; max-height: 80px; overflow-y: auto; background: #1a252f; padding: 6px; border-radius: 6px;">
+            <span style="color: #888;">Waiting for order...</span>
+        </div>
+    </div>
+
+    <div id="overlay" class="overlay" onclick="closeCart()"></div>
+    <div id="toast" class="toast"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let restaurants = @Html.Raw(Json.Serialize(Model));
+        let currentDiscount = 0;
+        let currentPointsDiscount = 0;
+        let driverInterval = null;
+
+        function showToast(msg, isErr) {
+            let t = $('#toast');
+            t.text(msg).css('background', isErr ? '#e74c3c' : '#27ae60').fadeIn(200);
+            setTimeout(() => t.fadeOut(300), 3000);
+        }
+
+        function loadPoints() {
+            $.get('/Home/GetLoyaltyPoints', function(d) {
+                $('#pointsAvailable').html(`✨ You have ${d.points} points (10 points = R1)`);
+            });
+        }
+
+        function displayRestaurants() {
+            let fastFood = restaurants.filter(r => r.category === "Fast Food");
+            let premium = restaurants.filter(r => r.category === "Premium");
+            let healthy = restaurants.filter(r => r.category === "Healthy");
+
+            let html = '';
+
+            if (fastFood.length) {
+                html += `<div class="category"><div class="category-title">🍔 FAST FOOD</div><div class="restaurant-grid">`;
+                fastFood.forEach(r => {
+                    html += `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
+                                <div class="restaurant-icon">${r.imageIcon}</div>
+                                <div class="restaurant-name">${r.name}</div>
+                                <div class="restaurant-rating">⭐ ${r.rating}</div>
+                                <div class="restaurant-time">⏱️ ${r.deliveryTime}</div>
+                             </div>`;
+                });
+                html += `</div></div>`;
+            }
+
+            if (premium.length) {
+                html += `<div class="category"><div class="category-title">👑 PREMIUM</div><div class="restaurant-grid">`;
+                premium.forEach(r => {
+                    html += `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
+                                <div class="restaurant-icon">${r.imageIcon}</div>
+                                <div class="restaurant-name">${r.name}</div>
+                                <div class="restaurant-rating">⭐ ${r.rating}</div>
+                                <div class="restaurant-time">⏱️ ${r.deliveryTime}</div>
+                             </div>`;
+                });
+                html += `</div></div>`;
+            }
+
+            if (healthy.length) {
+                html += `<div class="category"><div class="category-title">🌿 HEALTHY</div><div class="restaurant-grid">`;
+                healthy.forEach(r => {
+                    html += `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
+                                <div class="restaurant-icon">${r.imageIcon}</div>
+                                <div class="restaurant-name">${r.name}</div>
+                                <div class="restaurant-rating">⭐ ${r.rating}</div>
+                                <div class="restaurant-time">⏱️ ${r.deliveryTime}</div>
+                             </div>`;
+                });
+                html += `</div></div>`;
+            }
+
+            $('#restaurantsContainer').html(html);
+        }
+
+        function openRestaurant(id) {
+            let r = restaurants.find(x => x.id === id);
+            if (!r) return;
+            $('#modalTitle').html(`${r.imageIcon} ${r.name}`);
+            let html = '';
+            r.menu.forEach(item => {
+                html += `<div class="menu-item" onclick="showCustom('${r.id}','${r.name}',${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                            <div class="menu-item-info">
+                                <h4>${item.icon} ${item.name} ${item.isPopular ? '🔥' : ''}</h4>
+                                <p>${item.description}</p>
+                            </div>
+                            <div>
+                                <span class="menu-price">R${item.price}</span>
+                                <button class="add-btn">Add</button>
+                            </div>
+                        </div>`;
+            });
+            $('#menuList').html(html);
+            $('#restaurantModal').show();
+        }
+
+        function showCustom(restId, restName, item) {
+            let html = `<h3>${item.icon} ${item.name} - R${item.price}</h3>
+                        <p>${item.description}</p>
+                        <h4>✨ Extras:</h4>`;
+            if (item.customizations && item.customizations.length) {
+                item.customizations.forEach(c => {
+                    html += `<label class="custom-option"><input type="checkbox" value="${c.name}" data-price="${c.price}"> ${c.icon} ${c.name} (+R${c.price})</label>`;
+                });
+            } else {
+                html += '<p>No extras available</p>';
+            }
+            html += `<button onclick="addToCart('${restId}','${restName}',${item.id},'${item.name}',${item.price},'${item.type}')"
+                            style="width:100%; margin-top:15px; background:#FF6B35; color:white; padding:10px; border:none; border-radius:8px; cursor:pointer;">➕ Add to Cart</button>
+                    <button onclick="closeCustom()" style="width:100%; margin-top:10px; background:#ccc; padding:10px; border:none; border-radius:8px; cursor:pointer;">Cancel</button>`;
+            $('#customContent').html(html);
+            $('#customModal').show();
+        }
+
+        function addToCart(restId, restName, itemId, itemName, itemPrice, itemType) {
+            let extras = [];
+            $('#customModal input:checked').each(function () { extras.push($(this).val()); });
+
+            $.post('/Home/AddToCart', { restaurantId: restId, itemId: itemId, extras: extras }, function (res) {
+                if (res.success) {
+                    $('#cartCount').text(res.cartCount);
+                    showToast(`✅ ${itemName} added to cart!`, false);
+                    closeCustom();
+                    closeModal();
+                } else {
+                    showToast(res.message, true);
+                }
+            }).fail(() => showToast("❌ Error adding to cart", true));
+        }
+
+        function loadCart() {
+            $.get('/Home/GetCart', function (data) {
+                if (!data.items || !data.items.length) {
+                    $('#cartItems').html('<p style="text-align:center; padding:20px;">🛒 Your cart is empty</p>');
+                    $('#cartSummary').hide();
+                    return;
+                }
+                let html = '';
+                data.items.forEach(i => {
+                    html += `<div class="cart-item">
+                                <span class="cart-item-name">${i.itemIcon} ${i.itemName}</span>
+                                <button class="remove-btn" onclick="removeFromCart(${i.index})">✕</button><br>
+                                📍 ${i.restaurantName}
+                                ${i.extras && i.extras.length ? `<div class="cart-extras">✨ + ${i.extras.join(', ')}</div>` : ''}
+                                <div>💰 R${i.totalPrice.toFixed(2)}</div>
+                             </div>`;
+                });
+                $('#cartItems').html(html);
+
+                let total = data.total - currentDiscount - currentPointsDiscount;
+                if (total < 0) total = 0;
+
+                $('#cartSummary').html(`
+                    <div class="summary">
+                        <div class="summary-row"><span>📦 Subtotal:</span><span>R${data.subtotal.toFixed(2)}</span></div>
+                        <div class="summary-row"><span>🚚 Delivery:</span><span>R${data.deliveryFee.toFixed(2)}</span></div>
+                        <div class="promo-group"><input type="text" id="promoCode" placeholder="🏷️ Enter promo code (CRAVE20, CRAVE10, FREEDELIVERY)"><button onclick="applyPromo()" style="background:#FF6B35; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">Apply</button></div>
+                        <div class="points-group"><input type="number" id="pointsInput" placeholder="⭐ Enter loyalty points"><button onclick="applyPoints()" style="background:#9B59B6; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">Apply</button></div>
+                        <div id="pointsAvailable" style="font-size:12px; color:#666; margin-bottom:10px;"></div>
+                        <div class="summary-row"><span>💳 Payment:</span><select id="paymentMethod" class="payment-select"><option>💳 Credit Card</option><option>🏦 EFT</option><option>📱 PayFast</option></select></div>
+                        <div class="summary-row total"><span>💰 TOTAL:</span><span>R${total.toFixed(2)}</span></div>
+                        <button class="place-order-btn" onclick="placeOrder()">✅ PLACE ORDER</button>
+                    </div>
+                `).show();
+                loadPoints();
+            });
+        }
+
+        // Save/Load Functions
+        function saveCart() {
+            let itemCount = $('#cartCount').text();
+            if (itemCount == 0) {
+                showToast("Cart is empty! Nothing to save.", true);
+                return;
+            }
+            $.post('/Home/SaveCart', function (r) {
+                if (r.success) {
+                    showToast(r.message);
+                }
+            });
+        }
+
+        function loadCartSave() {
+            $.post('/Home/LoadCart', function (r) {
+                if (r.success) {
+                    showToast(r.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showToast(r.message, true);
+                }
+            });
+        }
+
+        // Driver Tracking 
+        let driverStages = [
+            { status: "Searching for driver", eta: 8, progress: 20 },
+            { status: "Driver assigned", eta: 5, progress: 40 },
+            { status: "Driver en route to restaurant", eta: 3, progress: 60 },
+            { status: "Driver at restaurant - picking up", eta: 2, progress: 75 },
+            { status: "Driver on the way to you", eta: 5, progress: 85 },
+            { status: "Nearby - 5 minutes away", eta: 5, progress: 95 },
+            { status: "Arriving now", eta: 2, progress: 98 },
+            { status: "Delivered! Enjoy your meal", eta: 0, progress: 100 }
+        ];
+        let currentStage = 0;
+
+        function startDriverTracking() {
+            $('#driverFloatingPanel').show();
+            if (driverInterval) clearInterval(driverInterval);
+
+            currentStage = 0;
+            updateDriverDisplay();
+
+            driverInterval = setInterval(function() {
+                if (currentStage < driverStages.length - 1) {
+                    currentStage++;
+                    updateDriverDisplay();
+
+                    if (currentStage === driverStages.length - 1) {
+                        clearInterval(driverInterval);
+                        addNotification("✅ Order delivered successfully!");
+                    }
+                } else {
+                    clearInterval(driverInterval);
+                }
+            }, 4000);
+        }
+
+        function updateDriverDisplay() {
+            let stage = driverStages[currentStage];
+            $('#driverName').text("Michael");
+            $('#driverStatus').html(`<span class="status-dot"></span> ${stage.status}`);
+            $('#driverEta').text(stage.eta > 0 ? `${stage.eta} minutes` : "Arrived");
+            $('#etaProgress').css('width', `${stage.progress}%`);
+
+            let historyHtml = '<strong>📍 Trip Timeline:</strong><br>';
+            for (let i = 0; i <= currentStage; i++) {
+                let icon = i === currentStage ? '🔄' : '✅';
+                historyHtml += `<div style="padding: 3px 0; border-bottom: 1px solid #34495e;">${icon} ${driverStages[i].status}</div>`;
+            }
+            $('#driverHistory').html(historyHtml);
+        }
+
+        function closeDriverPanel() {
+            $('#driverFloatingPanel').hide();
+            if (driverInterval) clearInterval(driverInterval);
+        }
+
+        function addNotification(message) {
+            let time = new Date().toLocaleTimeString();
+            $('#orderNotifications').prepend(`<div class="notification-item"><span class="notification-time">[${time}]</span> ${message}</div>`);
+            if ($('#orderNotifications .notification-item').length > 15) {
+                $('#orderNotifications .notification-item:last').remove();
+            }
+        }
+
+        function applyPromo() {
+            let code = $('#promoCode').val();
+            if (!code) { showToast("Please enter a promo code", true); return; }
+            $.post('/Home/ApplyPromo', { promoCode: code }, r => {
+                if (r.success) { currentDiscount = r.discount; showToast(r.message); loadCart(); }
+                else showToast(r.message, true);
+            });
+        }
+
+        function applyPoints() {
+            let pts = $('#pointsInput').val();
+            if (!pts || pts <= 0) { showToast("Please enter valid points", true); return; }
+            $.post('/Home/ApplyPoints', { points: pts }, r => {
+                if (r.success) { currentPointsDiscount = r.discount; showToast(`⭐ ${pts} points applied! Saved R${r.discount.toFixed(2)}`); loadCart(); }
+            });
+        }
+
+        function removeFromCart(i) {
+            $.post('/Home/RemoveFromCart', { index: i }, () => { loadCart(); updateCount(); showToast("🗑️ Item removed", false); });
+        }
+
+        function clearCart() {
+            if (confirm('Clear entire cart?')) {
+                $.post('/Home/ClearCart', () => { loadCart(); updateCount(); showToast("🧹 Cart cleared", false); });
+            }
+        }
+
+        function updateCount() {
+            $.get('/Home/GetCart', d => $('#cartCount').text(d.itemCount || 0));
+        }
+
+        function placeOrder() {
+            let pm = $('#paymentMethod').val();
+            let total = parseFloat($('.total span:last').text().replace('R', ''));
+
+            if (total <= 0) {
+                showToast("Cart is empty! Add items first.", true);
+                return;
+            }
+
+            // Start driver tracking in separate panel
+            startDriverTracking();
+
+            $('#notificationPanel').show();
+            $('#orderNotifications').html('<div class="notification-item">⏳ Processing your order...</div>');
+
+            addNotification("🔄 Connecting to restaurant...");
+            setTimeout(() => addNotification("📋 Order received by restaurant"), 500);
+            setTimeout(() => addNotification("👨‍🍳 Chef is preparing your meal"), 1000);
+            setTimeout(() => addNotification("✅ Meal is ready! Packing in progress"), 2000);
+            setTimeout(() => addNotification("🚗 Driver assigned to your order"), 2500);
+            setTimeout(() => addNotification("🚚 Driver is on the way!"), 3000);
+
+            $.post('/Home/PlaceOrder', { paymentMethod: pm, total: total }, function (r) {
+                if (r.success) {
+                    addNotification("✅ Order completed successfully!");
+                    addNotification(`⭐ Earned ${r.pointsEarned} loyalty points!`);
+                    addNotification(`📊 ${r.loggerSummary}`);
+
+                    setTimeout(() => {
+                        alert("✅ Order placed successfully!\n\n" + r.loggerSummary + "\n\n⭐ Earned " + r.pointsEarned + " points!\n💰 Total points: " + r.totalPoints);
+                        closeCart();
+                        updateCount();
+                        currentDiscount = 0;
+                        currentPointsDiscount = 0;
+
+                        setTimeout(() => {
+                            $('#notificationPanel').hide();
+                            $('#orderNotifications').empty();
+                        }, 8000);
+                    }, 1000);
+                } else {
+                    addNotification("❌ Order failed: " + r.message);
+                    showToast("❌ Order failed", true);
+                }
+            }).fail(() => {
+                addNotification("❌ Network error. Please try again.");
+                showToast("❌ Error placing order", true);
+            });
+        }
+
+        function toggleCart() {
+            $('#cartSidebar').toggleClass('open');
+            $('#overlay').toggleClass('active');
+            if ($('#cartSidebar').hasClass('open')) loadCart();
+        }
+
+        function closeCart() {
+            $('#cartSidebar').removeClass('open');
+            $('#overlay').removeClass('active');
+        }
+
+        function closeModal() { $('#restaurantModal').hide(); }
+        function closeCustom() { $('#customModal').hide(); }
+
+        $(document).ready(function () {
+            displayRestaurants();
+            updateCount();
+            $(document).click(e => { if ($(e.target).hasClass('modal')) closeModal(); });
+        });
+    </script>
+</body>
+</html>

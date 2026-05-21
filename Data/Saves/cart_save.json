@@ -1,0 +1,92 @@
+{
+  "Items": [
+    {
+      "Id": "a2fae472-5df7-46f6-a7c4-0fc795830701",
+      "RestaurantId": "truefood",
+      "RestaurantName": "True Food Kitchen",
+      "Item": {
+        "Id": 29,
+        "Name": "Ancient Grains Bowl",
+        "Price": 70,
+        "Type": "bowl",
+        "Icon": "\uD83E\uDD63",
+        "Description": "Quinoa, sweet potato, kale",
+        "IsPopular": true,
+        "RestaurantId": 0,
+        "Customizations": [
+          {
+            "Name": "Extra Avocado",
+            "Price": 12,
+            "Icon": "\uD83E\uDD51"
+          },
+          {
+            "Name": "Grilled Chicken",
+            "Price": 15,
+            "Icon": "\uD83C\uDF57"
+          }
+        ]
+      },
+      "Extras": [
+        "Grilled Chicken"
+      ],
+      "TotalPrice": 85,
+      "ItemName": "Ancient Grains Bowl",
+      "ItemIcon": "\uD83E\uDD63"
+    },
+    {
+      "Id": "dd95e221-7332-4e7d-aed9-a8bf5d5b8e20",
+      "RestaurantId": "sweetgreen",
+      "RestaurantName": "Sweetgreen",
+      "Item": {
+        "Id": 27,
+        "Name": "Fruit Cup",
+        "Price": 25,
+        "Type": "sides",
+        "Icon": "\uD83C\uDF4E",
+        "Description": "Fresh mixed fruit",
+        "IsPopular": false,
+        "RestaurantId": 0,
+        "Customizations": []
+      },
+      "Extras": [],
+      "TotalPrice": 25,
+      "ItemName": "Fruit Cup",
+      "ItemIcon": "\uD83C\uDF4E"
+    },
+    {
+      "Id": "543d2e3c-40fe-43b5-947c-33f854a5d698",
+      "RestaurantId": "truefood",
+      "RestaurantName": "True Food Kitchen",
+      "Item": {
+        "Id": 31,
+        "Name": "Kale Salad",
+        "Price": 55,
+        "Type": "salad",
+        "Icon": "\uD83E\uDD57",
+        "Description": "Massaged kale salad",
+        "IsPopular": false,
+        "RestaurantId": 0,
+        "Customizations": [
+          {
+            "Name": "Extra Avocado",
+            "Price": 12,
+            "Icon": "\uD83E\uDD51"
+          },
+          {
+            "Name": "Grilled Chicken",
+            "Price": 15,
+            "Icon": "\uD83C\uDF57"
+          }
+        ]
+      },
+      "Extras": [],
+      "TotalPrice": 55,
+      "ItemName": "Kale Salad",
+      "ItemIcon": "\uD83E\uDD57"
+    }
+  ],
+  "LoyaltyPoints": 331,
+  "SaveDate": "2026-05-21T17:26:18.7271957+02:00",
+  "ItemCount": 3,
+  "TotalValue": 165
+}
