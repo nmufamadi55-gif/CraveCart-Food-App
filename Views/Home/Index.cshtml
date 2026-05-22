@@ -38,6 +38,14 @@
             font-weight: bold;
         }
 
+        .restaurant-image img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
         .cart-btn {
             background: white;
             color: #FF6B35;
@@ -589,10 +597,13 @@
             if (fastFood.length) {
                 html += `<div class="category"><div class="category-title">🍔 FAST FOOD</div><div class="restaurant-grid">`;
                 fastFood.forEach(r => {
+                    let imageHtml = r.imageUrl ?
+                        `<div class="restaurant-image"><img src="${r.imageUrl}" alt="${r.name}" onerror="this.src='https://via.placeholder.com/300x180/FF6B35/white?text=${encodeURIComponent(r.name)}'"></div>` :
+                        `<div class="restaurant-icon">${r.imageIcon || '🍔'}</div>`;
                     html += `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
-                                <div class="restaurant-icon">${r.imageIcon}</div>
+                                ${imageHtml}
                                 <div class="restaurant-name">${r.name}</div>
-                                <div class="restaurant-rating">⭐ ${r.rating}</div>
+                                <div class="restaurant-rating">⭐ ${r.rating} (${r.reviews}+)</div>
                                 <div class="restaurant-time">⏱️ ${r.deliveryTime}</div>
                              </div>`;
                 });
@@ -602,10 +613,13 @@
             if (premium.length) {
                 html += `<div class="category"><div class="category-title">👑 PREMIUM</div><div class="restaurant-grid">`;
                 premium.forEach(r => {
+                    let imageHtml = r.imageUrl ?
+                        `<div class="restaurant-image"><img src="${r.imageUrl}" alt="${r.name}" onerror="this.src='https://via.placeholder.com/300x180/9B59B6/white?text=${encodeURIComponent(r.name)}'"></div>` :
+                        `<div class="restaurant-icon">${r.imageIcon || '👑'}</div>`;
                     html += `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
-                                <div class="restaurant-icon">${r.imageIcon}</div>
+                                ${imageHtml}
                                 <div class="restaurant-name">${r.name}</div>
-                                <div class="restaurant-rating">⭐ ${r.rating}</div>
+                                <div class="restaurant-rating">⭐ ${r.rating} (${r.reviews}+)</div>
                                 <div class="restaurant-time">⏱️ ${r.deliveryTime}</div>
                              </div>`;
                 });
@@ -615,10 +629,13 @@
             if (healthy.length) {
                 html += `<div class="category"><div class="category-title">🌿 HEALTHY</div><div class="restaurant-grid">`;
                 healthy.forEach(r => {
+                    let imageHtml = r.imageUrl ?
+                        `<div class="restaurant-image"><img src="${r.imageUrl}" alt="${r.name}" onerror="this.src='https://via.placeholder.com/300x180/2ECC71/white?text=${encodeURIComponent(r.name)}'"></div>` :
+                        `<div class="restaurant-icon">${r.imageIcon || '🌿'}</div>`;
                     html += `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
-                                <div class="restaurant-icon">${r.imageIcon}</div>
+                                ${imageHtml}
                                 <div class="restaurant-name">${r.name}</div>
-                                <div class="restaurant-rating">⭐ ${r.rating}</div>
+                                <div class="restaurant-rating">⭐ ${r.rating} (${r.reviews}+)</div>
                                 <div class="restaurant-time">⏱️ ${r.deliveryTime}</div>
                              </div>`;
                 });
@@ -631,13 +648,25 @@
         function openRestaurant(id) {
             let r = restaurants.find(x => x.id === id);
             if (!r) return;
-            $('#modalTitle').html(`${r.imageIcon} ${r.name}`);
+
+            let headerImage = r.imageUrl ?
+                `<img src="${r.imageUrl}" style="width: 50px; height: 50px; border-radius: 25px; margin-right: 10px; object-fit: cover;" onerror="this.style.display='none'">` :
+                `${r.imageIcon || '🏪'}`;
+
+            $('#modalTitle').html(`${headerImage} ${r.name}`);
             let html = '';
             r.menu.forEach(item => {
+                let itemImage = item.imageUrl ?
+                    `<img src="${item.imageUrl}" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover; margin-right: 15px;" onerror="this.style.display='none'">` :
+                    `<span style="font-size: 32px; margin-right: 15px;">${item.icon || '🍽️'}</span>`;
+
                 html += `<div class="menu-item" onclick="showCustom('${r.id}','${r.name}',${JSON.stringify(item).replace(/"/g, '&quot;')})">
-                            <div class="menu-item-info">
-                                <h4>${item.icon} ${item.name} ${item.isPopular ? '🔥' : ''}</h4>
-                                <p>${item.description}</p>
+                            <div style="display: flex; align-items: center; flex: 1;">
+                                ${itemImage}
+                                <div class="menu-item-info">
+                                    <h4>${item.name} ${item.isPopular ? '🔥' : ''}</h4>
+                                    <p>${item.description || ''}</p>
+                                </div>
                             </div>
                             <div>
                                 <span class="menu-price">R${item.price}</span>
@@ -650,19 +679,39 @@
         }
 
         function showCustom(restId, restName, item) {
-            let html = `<h3>${item.icon} ${item.name} - R${item.price}</h3>
-                        <p>${item.description}</p>
-                        <h4>✨ Extras:</h4>`;
+            let itemImage = item.imageUrl ?
+                `<img src="${item.imageUrl}" style="width: 80px; height: 80px; border-radius: 15px; object-fit: cover; margin-bottom: 10px;" onerror="this.style.display='none'">` :
+                `<div style="font-size: 48px; margin-bottom: 10px;">${item.icon || '🍽️'}</div>`;
+
+            let html = `<div style="text-align: center;">
+                            ${itemImage}
+                            <h3>${item.name} - R${item.price}</h3>
+                            <p>${item.description || ''}</p>
+                        </div>
+                        <h4>✨ Customizations:</h4>`;
+
             if (item.customizations && item.customizations.length) {
                 item.customizations.forEach(c => {
-                    html += `<label class="custom-option"><input type="checkbox" value="${c.name}" data-price="${c.price}"> ${c.icon} ${c.name} (+R${c.price})</label>`;
+                    let extraImage = c.icon && !c.icon.match(/[\u{1F300}-\u{1F9FF}]/u) && c.icon.startsWith('/') ?
+                        `<img src="${c.icon}" style="width: 20px; height: 20px; margin-right: 5px; vertical-align: middle;" onerror="this.style.display='none'">` :
+                        `<span style="font-size: 18px; margin-right: 5px;">${c.icon || '➕'}</span>`;
+                    html += `<label class="custom-option">
+                                <input type="checkbox" value="${c.name}" data-price="${c.price}">
+                                ${extraImage} ${c.name} (+R${c.price})
+                            </label>`;
                 });
             } else {
-                html += '<p>No extras available</p>';
+                html += '<p>No customizations available</p>';
             }
+
             html += `<button onclick="addToCart('${restId}','${restName}',${item.id},'${item.name}',${item.price},'${item.type}')"
-                            style="width:100%; margin-top:15px; background:#FF6B35; color:white; padding:10px; border:none; border-radius:8px; cursor:pointer;">➕ Add to Cart</button>
-                    <button onclick="closeCustom()" style="width:100%; margin-top:10px; background:#ccc; padding:10px; border:none; border-radius:8px; cursor:pointer;">Cancel</button>`;
+                            style="width:100%; margin-top:15px; background:#FF6B35; color:white; padding:10px; border:none; border-radius:8px; cursor:pointer;">
+                            ➕ Add to Cart
+                        </button>
+                        <button onclick="closeCustom()" style="width:100%; margin-top:10px; background:#ccc; padding:10px; border:none; border-radius:8px; cursor:pointer;">
+                            Cancel
+                        </button>`;
+
             $('#customContent').html(html);
             $('#customModal').show();
         }
@@ -692,10 +741,17 @@
                 }
                 let html = '';
                 data.items.forEach(i => {
+                    let itemIconHtml = i.itemIcon && i.itemIcon.startsWith('/') ?
+                        `<img src="${i.itemIcon}" style="width: 30px; height: 30px; border-radius: 8px; object-fit: cover; margin-right: 10px; vertical-align: middle;" onerror="this.style.display='none'">` :
+                        `<span style="font-size: 20px; margin-right: 10px;">${i.itemIcon || '🍽️'}</span>`;
+
                     html += `<div class="cart-item">
-                                <span class="cart-item-name">${i.itemIcon} ${i.itemName}</span>
-                                <button class="remove-btn" onclick="removeFromCart(${i.index})">✕</button><br>
-                                📍 ${i.restaurantName}
+                                <div style="display: flex; align-items: center;">
+                                    ${itemIconHtml}
+                                    <span class="cart-item-name">${i.itemName}</span>
+                                    <button class="remove-btn" onclick="removeFromCart(${i.index})">✕</button>
+                                </div>
+                                📍 ${i.restaurantName}<br>
                                 ${i.extras && i.extras.length ? `<div class="cart-extras">✨ + ${i.extras.join(', ')}</div>` : ''}
                                 <div>💰 R${i.totalPrice.toFixed(2)}</div>
                              </div>`;
@@ -746,7 +802,7 @@
             });
         }
 
-        // Driver Tracking 
+        // Driver Tracking
         let driverStages = [
             { status: "Searching for driver", eta: 8, progress: 20 },
             { status: "Driver assigned", eta: 5, progress: 40 },

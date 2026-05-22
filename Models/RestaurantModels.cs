@@ -14,6 +14,7 @@ namespace CraveCart.Models
         public string Name { get; set; }
         public string Category { get; set; }
         public string DeliveryTime { get; set; }
+        public string ImageUrl { get; set; }
         public string CoverColor { get; set; }
         public string ImageIcon { get; set; }
         public IRestaurantFactory Factory { get; set; }
@@ -35,8 +36,9 @@ namespace CraveCart.Models
         public string Name { get; set; }
         public decimal Price { get; set; }
         public string Type { get; set; }
-        public string Icon { get; set; }
+        public string Icon { get; set; } 
         public string Description { get; set; }
+        public string ImageUrl { get; set; }
         public bool IsPopular { get; set; }
         public int RestaurantId { get; set; }
         public List<Customization> Customizations { get; set; }
