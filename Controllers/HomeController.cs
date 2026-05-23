@@ -113,9 +113,9 @@ namespace CraveCart.Controllers
                 Menu = new List<MenuItem>()
             };
             bk.Menu.Add(new MenuItem { Id = 1, Name = "Whopper", Price = 55, Type = "burger", ImageUrl = "/images/menu/whopper.jpg", Description = "Flame-grilled beef patty", IsPopular = true, Customizations = GetBurgerExtras() });
-            bk.Menu.Add(new MenuItem { Id = 2, Name = "Chicken Royale", Price = 50, Type = "chicken", ImageUrl = "/images/menu/chicken-royale.jpg", Description = "Crispy chicken burger", IsPopular = true, Customizations = GetChickenExtras() });
-            bk.Menu.Add(new MenuItem { Id = 3, Name = "Bacon Double Cheeseburger", Price = 65, Type = "burger", ImageUrl = "/images/menu/bacon-double.jpg", Description = "Double beef with bacon", IsPopular = false, Customizations = GetBurgerExtras() });
-            bk.Menu.Add(new MenuItem { Id = 4, Name = "Onion Rings", Price = 25, Type = "sides", ImageUrl = "/images/menu/onion-rings.jpg", Description = "Crispy onion rings", IsPopular = false, Customizations = new List<Customization>() });
+            bk.Menu.Add(new MenuItem { Id = 2, Name = "Chicken Royale", Price = 50, Type = "chicken", ImageUrl = "/images/menu/chicken-royal.jpg", Description = "Crispy chicken burger", IsPopular = true, Customizations = GetChickenExtras() });
+            bk.Menu.Add(new MenuItem { Id = 3, Name = "Bacon Double Cheeseburger", Price = 65, Type = "burger", ImageUrl = "/images/menu/king-double.png", Description = "Double beef with bacon", IsPopular = false, Customizations = GetBurgerExtras() });
+            bk.Menu.Add(new MenuItem { Id = 4, Name = "Onion Rings", Price = 25, Type = "sides", ImageUrl = "/images/menu/king-onions.png", Description = "Crispy onion rings", IsPopular = false, Customizations = new List<Customization>() });
             _restaurants.Add(bk);
 
             // 2. Chick-fil-A
@@ -126,16 +126,16 @@ namespace CraveCart.Controllers
                 Category = "Fast Food",
                 DeliveryTime = "20-30 min",
                 CoverColor = "#E41C2B",
-                ImageUrl = "/images/restaurants/chickfila.jpg",
+                ImageUrl = "/images/restaurants/chickfil-a.png",
                 Factory = new FastFoodFactory(),
                 Rating = 4.7,
                 Reviews = 2500,
                 Menu = new List<MenuItem>()
             };
             cfa.Menu.Add(new MenuItem { Id = 5, Name = "Original Chicken Sandwich", Price = 48, Type = "chicken", ImageUrl = "/images/menu/chicken-sandwich.jpg", Description = "Classic chicken sandwich", IsPopular = true, Customizations = GetChickenExtras() });
-            cfa.Menu.Add(new MenuItem { Id = 6, Name = "Spicy Chicken Sandwich", Price = 50, Type = "chicken", ImageUrl = "/images/menu/spicy-chicken.jpg", Description = "Spicy version", IsPopular = true, Customizations = GetChickenExtras() });
-            cfa.Menu.Add(new MenuItem { Id = 7, Name = "Chicken Nuggets (12pc)", Price = 45, Type = "chicken", ImageUrl = "/images/menu/nuggets.jpg", Description = "Bite-sized chicken", IsPopular = false, Customizations = GetChickenExtras() });
-            cfa.Menu.Add(new MenuItem { Id = 8, Name = "Waffle Fries", Price = 28, Type = "sides", ImageUrl = "/images/menu/waffle-fries.jpg", Description = "Waffle-cut fries", IsPopular = false, Customizations = new List<Customization>() });
+            cfa.Menu.Add(new MenuItem { Id = 6, Name = "Spicy Chicken Sandwich", Price = 50, Type = "chicken", ImageUrl = "/images/menu/spicyDeluxe.png", Description = "Spicy version", IsPopular = true, Customizations = GetChickenExtras() });
+            cfa.Menu.Add(new MenuItem { Id = 7, Name = "Chicken Nuggets (12pc)", Price = 45, Type = "chicken", ImageUrl = "/images/menu/chick-nuggets.png", Description = "Bite-sized chicken", IsPopular = false, Customizations = GetChickenExtras() });
+            cfa.Menu.Add(new MenuItem { Id = 8, Name = "Waffle Fries", Price = 28, Type = "sides", ImageUrl = "/images/menu/wafflefries.png", Description = "Waffle-cut fries", IsPopular = false, Customizations = new List<Customization>() });
             _restaurants.Add(cfa);
 
             // 3. ORLANDO PIRATES
@@ -146,7 +146,7 @@ namespace CraveCart.Controllers
                 Category = "Fast Food",
                 DeliveryTime = "25-35 min",
                 CoverColor = "#000000",
-                ImageUrl = "/images/restaurants/orlandopirates.jpg",
+                ImageUrl = "/images/restaurants/Orlando.png",
                 Factory = new FastFoodFactory(),
                 Rating = 4.9,
                 Reviews = 3500,
@@ -154,8 +154,8 @@ namespace CraveCart.Controllers
             };
             pirates.Menu.Add(new MenuItem { Id = 9, Name = "Buccaneer Burger", Price = 85, Type = "burger", ImageUrl = "/images/menu/buccaneer.jpg", Description = "Double beef patty with special sea salt sauce", IsPopular = true, Customizations = GetBurgerExtras() });
             pirates.Menu.Add(new MenuItem { Id = 10, Name = "Sea Robber Chicken Wings", Price = 75, Type = "chicken", ImageUrl = "/images/menu/chicken-wings.jpg", Description = "12 spicy wings with pirate sauce", IsPopular = true, Customizations = GetChickenExtras() });
-            pirates.Menu.Add(new MenuItem { Id = 11, Name = "Black Pearl Pizza", Price = 110, Type = "pizza", ImageUrl = "/images/menu/black-pearl.jpg", Description = "Pepperoni, olives, and jalapeños", IsPopular = false, Customizations = GetPizzaExtras() });
-            pirates.Menu.Add(new MenuItem { Id = 12, Name = "Ghost Ship Nachos", Price = 65, Type = "sides", ImageUrl = "/images/menu/nachos.jpg", Description = "Loaded nachos with cheese and salsa", IsPopular = false, Customizations = new List<Customization>() });
+            pirates.Menu.Add(new MenuItem { Id = 11, Name = "Treble Winner Pizza", Price = 110, Type = "pizza", ImageUrl = "/images/menu/blackpearl.png", Description = "Pepperoni, olives, and jalapeños", IsPopular = false, Customizations = GetPizzaExtras() });
+            pirates.Menu.Add(new MenuItem { Id = 12, Name = "Ghost Ship Nachos", Price = 65, Type = "sides", ImageUrl = "/images/menu/ghost-nachos.png", Description = "Loaded nachos with cheese and salsa", IsPopular = false, Customizations = new List<Customization>() });
             _restaurants.Add(pirates);
 
             // ========== PREMIUM RESTAURANTS ==========
@@ -168,16 +168,16 @@ namespace CraveCart.Controllers
                 Category = "Premium",
                 DeliveryTime = "40-55 min",
                 CoverColor = "#C8102E",
-                ImageUrl = "/images/restaurants/liverpool.jpg",
+                ImageUrl = "/images/restaurants/Logo-Liverpool.png",
                 Factory = new PremiumFactory(),
                 Rating = 4.8,
                 Reviews = 3200,
                 Menu = new List<MenuItem>()
             };
-            liverpool.Menu.Add(new MenuItem { Id = 13, Name = "Kop Legend Chicken", Price = 85, Type = "chicken", ImageUrl = "/images/menu/kop-chicken.jpg", Description = "Grilled chicken with Anfield seasoning", IsPopular = true, Customizations = GetChickenExtras() });
-            liverpool.Menu.Add(new MenuItem { Id = 14, Name = "European Night Pasta", Price = 125, Type = "pasta", ImageUrl = "/images/menu/european-pasta.jpg", Description = "Creamy pasta with Italian herbs", IsPopular = true, Customizations = GetPastaExtras() });
-            liverpool.Menu.Add(new MenuItem { Id = 15, Name = "Mighty Reds Pizza", Price = 120, Type = "pizza", ImageUrl = "/images/menu/mighty-reds.jpg", Description = "Italian sausage, peppers, onions", IsPopular = false, Customizations = GetPizzaExtras() });
-            liverpool.Menu.Add(new MenuItem { Id = 16, Name = "Anfield Nachos", Price = 70, Type = "sides", ImageUrl = "/images/menu/anfield-nachos.jpg", Description = "Loaded nachos with cheese and jalapeños", IsPopular = false, Customizations = new List<Customization>() });
+            liverpool.Menu.Add(new MenuItem { Id = 13, Name = "Kop Legend Chicken", Price = 85, Type = "chicken", ImageUrl = "/images/menu/koplegend.png", Description = "Grilled chicken with Anfield seasoning", IsPopular = true, Customizations = GetChickenExtras() });
+            liverpool.Menu.Add(new MenuItem { Id = 14, Name = "European Night Pasta", Price = 125, Type = "pasta", ImageUrl = "/images/menu/europasta.png", Description = "Creamy pasta with Italian herbs", IsPopular = true, Customizations = GetPastaExtras() });
+            liverpool.Menu.Add(new MenuItem { Id = 15, Name = "Mighty Reds Pizza", Price = 120, Type = "pizza", ImageUrl = "/images/menu/mighty-reds.png", Description = "Italian sausage, peppers, onions", IsPopular = false, Customizations = GetPizzaExtras() });
+            liverpool.Menu.Add(new MenuItem { Id = 16, Name = "Anfield Nachos", Price = 70, Type = "sides", ImageUrl = "/images/menu/anfield-nachos.png", Description = "Loaded nachos with cheese and jalapeños", IsPopular = false, Customizations = new List<Customization>() });
             _restaurants.Add(liverpool);
 
             // 5. The Cheesecake Factory
@@ -188,15 +188,15 @@ namespace CraveCart.Controllers
                 Category = "Premium",
                 DeliveryTime = "50-70 min",
                 CoverColor = "#9B59B6",
-                ImageUrl = "/images/restaurants/cheesecake.jpg",
+                ImageUrl = "/images/restaurants/Cheesecake-Factory-Logo.png",
                 Factory = new PremiumFactory(),
                 Rating = 4.8,
                 Reviews = 3200,
                 Menu = new List<MenuItem>()
             };
-            cheesecake.Menu.Add(new MenuItem { Id = 17, Name = "Chicken Parmesan", Price = 145, Type = "pasta", ImageUrl = "/images/menu/chicken-parmesan.jpg", Description = "Breaded chicken with pasta", IsPopular = true, Customizations = GetPastaExtras() });
+            cheesecake.Menu.Add(new MenuItem { Id = 17, Name = "Chicken Parmesan", Price = 145, Type = "pasta", ImageUrl = "/images/menu/creamy-pastsa.png", Description = "Breaded chicken with pasta", IsPopular = true, Customizations = GetPastaExtras() });
             cheesecake.Menu.Add(new MenuItem { Id = 18, Name = "Grilled Salmon", Price = 165, Type = "fish", ImageUrl = "/images/menu/grilled-salmon.jpg", Description = "Fresh Atlantic salmon", IsPopular = true, Customizations = new List<Customization> { new Customization { Name = "Lemon Butter", Price = 5, Icon = "/images/icons/lemon.png" } } });
-            cheesecake.Menu.Add(new MenuItem { Id = 19, Name = "Original Cheesecake", Price = 55, Type = "dessert", ImageUrl = "/images/menu/cheesecake.jpg", Description = "Classic cheesecake", IsPopular = false, Customizations = new List<Customization> { new Customization { Name = "Strawberry Topping", Price = 5, Icon = "/images/icons/strawberry.png" } } });
+            cheesecake.Menu.Add(new MenuItem { Id = 19, Name = "Original Cheesecake", Price = 55, Type = "dessert", ImageUrl = "/images/menu/original-cheesecake.jpg", Description = "Classic cheesecake", IsPopular = false, Customizations = new List<Customization> { new Customization { Name = "Strawberry Topping", Price = 5, Icon = "/images/icons/strawberry.png" } } });
             cheesecake.Menu.Add(new MenuItem { Id = 20, Name = "Burger", Price = 95, Type = "burger", ImageUrl = "/images/menu/premium-burger.jpg", Description = "Premium burger", IsPopular = false, Customizations = GetBurgerExtras() });
             _restaurants.Add(cheesecake);
 
@@ -208,16 +208,16 @@ namespace CraveCart.Controllers
                 Category = "Premium",
                 DeliveryTime = "45-65 min",
                 CoverColor = "#E67E22",
-                ImageUrl = "/images/restaurants/nobu.jpg",
+                ImageUrl = "/images/restaurants/nobu.png",
                 Factory = new PremiumFactory(),
                 Rating = 4.8,
                 Reviews = 2100,
                 Menu = new List<MenuItem>()
             };
-            nobu.Menu.Add(new MenuItem { Id = 21, Name = "Black Cod Miso", Price = 155, Type = "fish", ImageUrl = "/images/menu/black-cod.jpg", Description = "Butterfish marinated in miso", IsPopular = true, Customizations = new List<Customization> { new Customization { Name = "Extra Miso", Price = 5, Icon = "/images/icons/miso.png" } } });
-            nobu.Menu.Add(new MenuItem { Id = 22, Name = "Yellowtail Sashimi", Price = 145, Type = "sushi", ImageUrl = "/images/menu/yellowtail.jpg", Description = "Fresh yellowtail", IsPopular = true, Customizations = GetSushiExtras() });
-            nobu.Menu.Add(new MenuItem { Id = 23, Name = "Sushi Roll Set", Price = 125, Type = "sushi", ImageUrl = "/images/menu/sushi-rolls.jpg", Description = "Assorted rolls", IsPopular = false, Customizations = GetSushiExtras() });
-            nobu.Menu.Add(new MenuItem { Id = 24, Name = "Rock Shrimp Tempura", Price = 135, Type = "shrimp", ImageUrl = "/images/menu/shrimp-tempura.jpg", Description = "Crispy shrimp", IsPopular = false, Customizations = new List<Customization> { new Customization { Name = "Spicy Mayo", Price = 4, Icon = "/images/icons/mayo.png" } } });
+            nobu.Menu.Add(new MenuItem { Id = 21, Name = "Black Cod Miso", Price = 155, Type = "fish", ImageUrl = "/images/menu/Black-Cod.jpg", Description = "Butterfish marinated in miso", IsPopular = true, Customizations = new List<Customization> { new Customization { Name = "Extra Miso", Price = 5, Icon = "/images/icons/miso.png" } } });
+            nobu.Menu.Add(new MenuItem { Id = 22, Name = "Yellowtail Sashimi", Price = 145, Type = "sushi", ImageUrl = "/images/menu/yellowtail-sashimi.jpg", Description = "Fresh yellowtail", IsPopular = true, Customizations = GetSushiExtras() });
+            nobu.Menu.Add(new MenuItem { Id = 23, Name = "Sushi Roll Set", Price = 125, Type = "sushi", ImageUrl = "/images/menu/sushi-roll.jpg", Description = "Assorted rolls", IsPopular = false, Customizations = GetSushiExtras() });
+            nobu.Menu.Add(new MenuItem { Id = 24, Name = "Rock Shrimp Tempura", Price = 135, Type = "shrimp", ImageUrl = "/images/menu/rock-shrimp.jpg", Description = "Crispy shrimp", IsPopular = false, Customizations = new List<Customization> { new Customization { Name = "Spicy Mayo", Price = 4, Icon = "/images/icons/mayo.png" } } });
             _restaurants.Add(nobu);
 
             // ========== HEALTHY RESTAURANTS ==========
@@ -230,16 +230,16 @@ namespace CraveCart.Controllers
                 Category = "Healthy",
                 DeliveryTime = "25-35 min",
                 CoverColor = "#2ECC71",
-                ImageUrl = "/images/restaurants/sweetgreen.jpg",
+                ImageUrl = "/images/restaurants/Sweetgreen-Logo.png",
                 Factory = new HealthyFactory(),
                 Rating = 4.6,
                 Reviews = 1950,
                 Menu = new List<MenuItem>()
             };
-            sweetgreen.Menu.Add(new MenuItem { Id = 25, Name = "Harvest Bowl", Price = 65, Type = "salad", ImageUrl = "/images/menu/harvest-bowl.jpg", Description = "Kale, sweet potato, chicken", IsPopular = true, Customizations = GetSaladExtras() });
-            sweetgreen.Menu.Add(new MenuItem { Id = 26, Name = "Guacamole Greens", Price = 60, Type = "salad", ImageUrl = "/images/menu/guacamole.jpg", Description = "Avocado, chicken, greens", IsPopular = true, Customizations = GetSaladExtras() });
+            sweetgreen.Menu.Add(new MenuItem { Id = 25, Name = "Harvest Bowl", Price = 65, Type = "salad", ImageUrl = "/images/menu/Bowl_Harvest.png", Description = "Kale, sweet potato, chicken", IsPopular = true, Customizations = GetSaladExtras() });
+            sweetgreen.Menu.Add(new MenuItem { Id = 26, Name = "Guacamole Greens", Price = 60, Type = "salad", ImageUrl = "/images/menu/guacamole-greens.jpg", Description = "Avocado, chicken, greens", IsPopular = true, Customizations = GetSaladExtras() });
             sweetgreen.Menu.Add(new MenuItem { Id = 27, Name = "Fruit Cup", Price = 25, Type = "sides", ImageUrl = "/images/menu/fruit-cup.jpg", Description = "Fresh mixed fruit", IsPopular = false, Customizations = new List<Customization>() });
-            sweetgreen.Menu.Add(new MenuItem { Id = 28, Name = "Buffalo Chicken Bowl", Price = 68, Type = "bowl", ImageUrl = "/images/menu/buffalo-bowl.jpg", Description = "Spicy chicken bowl", IsPopular = false, Customizations = GetChickenExtras() });
+            sweetgreen.Menu.Add(new MenuItem { Id = 28, Name = "Buffalo Chicken Bowl", Price = 68, Type = "bowl", ImageUrl = "/images/menu/buffulo-bowl.jpg", Description = "Spicy chicken bowl", IsPopular = false, Customizations = GetChickenExtras() });
             _restaurants.Add(sweetgreen);
 
             // 8. True Food Kitchen
@@ -250,14 +250,14 @@ namespace CraveCart.Controllers
                 Category = "Healthy",
                 DeliveryTime = "30-40 min",
                 CoverColor = "#27AE60",
-                ImageUrl = "/images/restaurants/truefood.jpg",
+                ImageUrl = "/images/restaurants/true-food-kitchen.jpg",
                 Factory = new HealthyFactory(),
                 Rating = 4.7,
                 Reviews = 1700,
                 Menu = new List<MenuItem>()
             };
             truefood.Menu.Add(new MenuItem { Id = 29, Name = "Ancient Grains Bowl", Price = 70, Type = "bowl", ImageUrl = "/images/menu/ancient-grains.jpg", Description = "Quinoa, sweet potato, kale", IsPopular = true, Customizations = GetSaladExtras() });
-            truefood.Menu.Add(new MenuItem { Id = 30, Name = "Turkey Burger", Price = 62, Type = "burger", ImageUrl = "/images/menu/turkey-burger.jpg", Description = "Lean turkey patty", IsPopular = true, Customizations = GetBurgerExtras() });
+            truefood.Menu.Add(new MenuItem { Id = 30, Name = "Turkey Burger", Price = 62, Type = "burger", ImageUrl = "/images/menu/urkey_burger.jpg", Description = "Lean turkey patty", IsPopular = true, Customizations = GetBurgerExtras() });
             truefood.Menu.Add(new MenuItem { Id = 31, Name = "Kale Salad", Price = 55, Type = "salad", ImageUrl = "/images/menu/kale-salad.jpg", Description = "Massaged kale salad", IsPopular = false, Customizations = GetSaladExtras() });
             truefood.Menu.Add(new MenuItem { Id = 32, Name = "Spaghetti Squash", Price = 68, Type = "pasta", ImageUrl = "/images/menu/spaghetti-squash.jpg", Description = "Healthy pasta alternative", IsPopular = false, Customizations = GetPastaExtras() });
             _restaurants.Add(truefood);
@@ -270,7 +270,7 @@ namespace CraveCart.Controllers
                 Category = "Healthy",
                 DeliveryTime = "25-35 min",
                 CoverColor = "#1ABC9C",
-                ImageUrl = "/images/restaurants/diginn.jpg",
+                ImageUrl = "/images/restaurants/DigInn_Company_Logo.png",
                 Factory = new HealthyFactory(),
                 Rating = 4.5,
                 Reviews = 1400,

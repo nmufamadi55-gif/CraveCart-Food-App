@@ -1,92 +1,89 @@
 {
   "Items": [
     {
-      "Id": "a2fae472-5df7-46f6-a7c4-0fc795830701",
-      "RestaurantId": "truefood",
-      "RestaurantName": "True Food Kitchen",
+      "Id": "88fd4ab6-ec67-4927-b3e5-330c08b6cb1f",
+      "RestaurantId": "nobu",
+      "RestaurantName": "Nobu",
       "Item": {
-        "Id": 29,
-        "Name": "Ancient Grains Bowl",
-        "Price": 70,
-        "Type": "bowl",
-        "Icon": "\uD83E\uDD63",
-        "Description": "Quinoa, sweet potato, kale",
+        "Id": 22,
+        "Name": "Yellowtail Sashimi",
+        "Price": 145,
+        "Type": "sushi",
+        "Icon": null,
+        "Description": "Fresh yellowtail",
+        "ImageUrl": "/images/menu/yellowtail-sashimi.jpg",
         "IsPopular": true,
         "RestaurantId": 0,
         "Customizations": [
           {
-            "Name": "Extra Avocado",
-            "Price": 12,
-            "Icon": "\uD83E\uDD51"
+            "Name": "Extra Wasabi",
+            "Price": 2,
+            "Icon": "/images/icons/wasabi.png"
           },
           {
-            "Name": "Grilled Chicken",
-            "Price": 15,
-            "Icon": "\uD83C\uDF57"
+            "Name": "Extra Ginger",
+            "Price": 3,
+            "Icon": "/images/icons/ginger.png"
           }
         ]
       },
       "Extras": [
-        "Grilled Chicken"
+        "Extra Wasabi",
+        "Extra Ginger"
       ],
-      "TotalPrice": 85,
-      "ItemName": "Ancient Grains Bowl",
-      "ItemIcon": "\uD83E\uDD63"
+      "TotalPrice": 150,
+      "ItemName": "Yellowtail Sashimi",
+      "ItemIcon": "/images/menu/yellowtail-sashimi.jpg"
     },
     {
-      "Id": "dd95e221-7332-4e7d-aed9-a8bf5d5b8e20",
-      "RestaurantId": "sweetgreen",
-      "RestaurantName": "Sweetgreen",
+      "Id": "d0a8a14d-1cfe-49dc-b74f-bdd85852dd05",
+      "RestaurantId": "pirates",
+      "RestaurantName": "Orlando Pirates - Buccaneers Cafe",
       "Item": {
-        "Id": 27,
-        "Name": "Fruit Cup",
-        "Price": 25,
-        "Type": "sides",
-        "Icon": "\uD83C\uDF4E",
-        "Description": "Fresh mixed fruit",
-        "IsPopular": false,
-        "RestaurantId": 0,
-        "Customizations": []
-      },
-      "Extras": [],
-      "TotalPrice": 25,
-      "ItemName": "Fruit Cup",
-      "ItemIcon": "\uD83C\uDF4E"
-    },
-    {
-      "Id": "543d2e3c-40fe-43b5-947c-33f854a5d698",
-      "RestaurantId": "truefood",
-      "RestaurantName": "True Food Kitchen",
-      "Item": {
-        "Id": 31,
-        "Name": "Kale Salad",
-        "Price": 55,
-        "Type": "salad",
-        "Icon": "\uD83E\uDD57",
-        "Description": "Massaged kale salad",
-        "IsPopular": false,
+        "Id": 9,
+        "Name": "Buccaneer Burger",
+        "Price": 85,
+        "Type": "burger",
+        "Icon": null,
+        "Description": "Double beef patty with special sea salt sauce",
+        "ImageUrl": "/images/menu/buccaneer.jpg",
+        "IsPopular": true,
         "RestaurantId": 0,
         "Customizations": [
           {
-            "Name": "Extra Avocado",
-            "Price": 12,
-            "Icon": "\uD83E\uDD51"
+            "Name": "Extra Cheese",
+            "Price": 10,
+            "Icon": "/images/icons/cheese.png"
           },
           {
-            "Name": "Grilled Chicken",
+            "Name": "Bacon",
             "Price": 15,
-            "Icon": "\uD83C\uDF57"
+            "Icon": "/images/icons/bacon.png"
+          },
+          {
+            "Name": "Patty",
+            "Price": 20,
+            "Icon": "/images/icons/patty.png"
+          },
+          {
+            "Name": "Pickles",
+            "Price": 5,
+            "Icon": "/images/icons/pickles.png"
           }
         ]
       },
-      "Extras": [],
-      "TotalPrice": 55,
-      "ItemName": "Kale Salad",
-      "ItemIcon": "\uD83E\uDD57"
+      "Extras": [
+        "Extra Cheese",
+        "Bacon",
+        "Pickles"
+      ],
+      "TotalPrice": 115,
+      "ItemName": "Buccaneer Burger",
+      "ItemIcon": "/images/menu/buccaneer.jpg"
     }
   ],
-  "LoyaltyPoints": 331,
-  "SaveDate": "2026-05-21T17:26:18.7271957+02:00",
-  "ItemCount": 3,
-  "TotalValue": 165
+  "LoyaltyPoints": 500,
+  "SaveDate": "2026-05-23T21:51:32.1216184+02:00",
+  "ItemCount": 2,
+  "TotalValue": 265
 }
