@@ -497,8 +497,8 @@
 <body>
 
     <div class="header">
-        <div class="logo">🍔 CraveCart</div>
-        <button class="cart-btn" onclick="toggleCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+        <div class="logo">CraveCart</div>
+        <button class="cart-btn" onclick="toggleCart()"> Cart <span class="cart-count" id="cartCount">0</span></button>
     </div>
 
     <div class="container" id="restaurantsContainer"></div>
@@ -521,40 +521,40 @@
 
     <!-- Cart Sidebar -->
     <div id="cartSidebar" class="cart-sidebar">
-        <h3>🛒 Your Cart</h3>
+        <h3> Your Cart</h3>
         <div id="cartItems"></div>
         <div id="cartSummary"></div>
 
         <!-- Save/Load Buttons -->
         <div class="save-load-buttons">
-            <button onclick="saveCart()" style="flex:1; background:#3498db; color:white; padding:8px; border:none; border-radius:8px; cursor:pointer;">💾 Save Cart</button>
-            <button onclick="loadCartSave()" style="flex:1; background:#2ecc71; color:white; padding:8px; border:none; border-radius:8px; cursor:pointer;">📂 Load Cart</button>
+            <button onclick="saveCart()" style="flex:1; background:#3498db; color:white; padding:8px; border:none; border-radius:8px; cursor:pointer;"> Save Cart</button>
+            <button onclick="loadCartSave()" style="flex:1; background:#2ecc71; color:white; padding:8px; border:none; border-radius:8px; cursor:pointer;"> Load Cart</button>
         </div>
 
         <!-- NOTIFICATION PANEL -->
         <div id="notificationPanel" class="notification-panel">
-            <h4>📋 Order Status</h4>
+            <h4> Order Status</h4>
             <div id="orderNotifications"></div>
         </div>
 
-        <button onclick="clearCart()" style="width:100%; margin-top:10px; background:#ccc; color:#333; padding:10px; border:none; border-radius:8px; cursor:pointer;">🗑️ Clear Cart</button>
+        <button onclick="clearCart()" style="width:100%; margin-top:10px; background:#ccc; color:#333; padding:10px; border:none; border-radius:8px; cursor:pointer;"> Clear Cart</button>
         <button onclick="closeCart()" style="width:100%; margin-top:10px; background:#ddd; padding:10px; border:none; border-radius:8px; cursor:pointer;">✕ Close</button>
     </div>
 
     <!-- Driver Tracking Floating Panel  -->
     <div id="driverFloatingPanel" class="driver-floating-panel">
         <button class="close-driver" onclick="closeDriverPanel()">✕</button>
-        <h4>🚚 Live Driver Tracking</h4>
+        <h4> Live Driver Tracking</h4>
         <div class="driver-info-row">
-            <span class="driver-label">👨‍✈️ Driver:</span>
+            <span class="driver-label"> Driver:</span>
             <span class="driver-value" id="driverName">-</span>
         </div>
         <div class="driver-info-row">
-            <span class="driver-label">📍 Status:</span>
+            <span class="driver-label"> Status:</span>
             <span class="driver-value" id="driverStatus">-</span>
         </div>
         <div class="driver-info-row">
-            <span class="driver-label">⏱️ ETA:</span>
+            <span class="driver-label"> ETA:</span>
             <span class="driver-value" id="driverEta">-</span>
         </div>
         <div class="progress-bar-container">
@@ -595,48 +595,48 @@
             let html = '';
 
             if (fastFood.length) {
-                html += `<div class="category"><div class="category-title">🍔 FAST FOOD</div><div class="restaurant-grid">`;
+                html += `<div class="category"><div class="category-title"> FAST FOOD</div><div class="restaurant-grid">`;
                 fastFood.forEach(r => {
                     let imageHtml = r.imageUrl ?
                         `<div class="restaurant-image"><img src="${r.imageUrl}" alt="${r.name}" onerror="this.src='https://via.placeholder.com/300x180/FF6B35/white?text=${encodeURIComponent(r.name)}'"></div>` :
-                        `<div class="restaurant-icon">${r.imageIcon || '🍔'}</div>`;
+                        `<div class="restaurant-icon">${r.imageIcon || }</div>`;
                     html += `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
                                 ${imageHtml}
                                 <div class="restaurant-name">${r.name}</div>
                                 <div class="restaurant-rating">⭐ ${r.rating} (${r.reviews}+)</div>
-                                <div class="restaurant-time">⏱️ ${r.deliveryTime}</div>
+                                <div class="restaurant-time"> ${r.deliveryTime}</div>
                              </div>`;
                 });
                 html += `</div></div>`;
             }
 
             if (premium.length) {
-                html += `<div class="category"><div class="category-title">👑 PREMIUM</div><div class="restaurant-grid">`;
+                html += `<div class="category"><div class="category-title"> PREMIUM</div><div class="restaurant-grid">`;
                 premium.forEach(r => {
                     let imageHtml = r.imageUrl ?
                         `<div class="restaurant-image"><img src="${r.imageUrl}" alt="${r.name}" onerror="this.src='https://via.placeholder.com/300x180/9B59B6/white?text=${encodeURIComponent(r.name)}'"></div>` :
-                        `<div class="restaurant-icon">${r.imageIcon || '👑'}</div>`;
+                        `<div class="restaurant-icon">${r.imageIcon || }</div>`;
                     html += `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
                                 ${imageHtml}
                                 <div class="restaurant-name">${r.name}</div>
                                 <div class="restaurant-rating">⭐ ${r.rating} (${r.reviews}+)</div>
-                                <div class="restaurant-time">⏱️ ${r.deliveryTime}</div>
+                                <div class="restaurant-time"> ${r.deliveryTime}</div>
                              </div>`;
                 });
                 html += `</div></div>`;
             }
 
             if (healthy.length) {
-                html += `<div class="category"><div class="category-title">🌿 HEALTHY</div><div class="restaurant-grid">`;
+                html += `<div class="category"><div class="category-title"> HEALTHY</div><div class="restaurant-grid">`;
                 healthy.forEach(r => {
                     let imageHtml = r.imageUrl ?
                         `<div class="restaurant-image"><img src="${r.imageUrl}" alt="${r.name}" onerror="this.src='https://via.placeholder.com/300x180/2ECC71/white?text=${encodeURIComponent(r.name)}'"></div>` :
-                        `<div class="restaurant-icon">${r.imageIcon || '🌿'}</div>`;
+                        `<div class="restaurant-icon">${r.imageIcon || }</div>`;
                     html += `<div class="restaurant-card" onclick="openRestaurant('${r.id}')">
                                 ${imageHtml}
                                 <div class="restaurant-name">${r.name}</div>
                                 <div class="restaurant-rating">⭐ ${r.rating} (${r.reviews}+)</div>
-                                <div class="restaurant-time">⏱️ ${r.deliveryTime}</div>
+                                <div class="restaurant-time"> ${r.deliveryTime}</div>
                              </div>`;
                 });
                 html += `</div></div>`;
@@ -651,20 +651,20 @@
 
             let headerImage = r.imageUrl ?
                 `<img src="${r.imageUrl}" style="width: 50px; height: 50px; border-radius: 25px; margin-right: 10px; object-fit: cover;" onerror="this.style.display='none'">` :
-                `${r.imageIcon || '🏪'}`;
+                `${r.imageIcon || }`;
 
             $('#modalTitle').html(`${headerImage} ${r.name}`);
             let html = '';
             r.menu.forEach(item => {
                 let itemImage = item.imageUrl ?
                     `<img src="${item.imageUrl}" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover; margin-right: 15px;" onerror="this.style.display='none'">` :
-                    `<span style="font-size: 32px; margin-right: 15px;">${item.icon || '🍽️'}</span>`;
+                    `<span style="font-size: 32px; margin-right: 15px;">${item.icon || }</span>`;
 
                 html += `<div class="menu-item" onclick="showCustom('${r.id}','${r.name}',${JSON.stringify(item).replace(/"/g, '&quot;')})">
                             <div style="display: flex; align-items: center; flex: 1;">
                                 ${itemImage}
                                 <div class="menu-item-info">
-                                    <h4>${item.name} ${item.isPopular ? '🔥' : ''}</h4>
+                                    <h4>${item.name} ${item.isPopular ?  : ''}</h4>
                                     <p>${item.description || ''}</p>
                                 </div>
                             </div>
@@ -681,7 +681,7 @@
         function showCustom(restId, restName, item) {
             let itemImage = item.imageUrl ?
                 `<img src="${item.imageUrl}" style="width: 80px; height: 80px; border-radius: 15px; object-fit: cover; margin-bottom: 10px;" onerror="this.style.display='none'">` :
-                `<div style="font-size: 48px; margin-bottom: 10px;">${item.icon || '🍽️'}</div>`;
+                `<div style="font-size: 48px; margin-bottom: 10px;">${item.icon || }</div>`;
 
             let html = `<div style="text-align: center;">
                             ${itemImage}
@@ -694,7 +694,7 @@
                 item.customizations.forEach(c => {
                     let extraImage = c.icon && !c.icon.match(/[\u{1F300}-\u{1F9FF}]/u) && c.icon.startsWith('/') ?
                         `<img src="${c.icon}" style="width: 20px; height: 20px; margin-right: 5px; vertical-align: middle;" onerror="this.style.display='none'">` :
-                        `<span style="font-size: 18px; margin-right: 5px;">${c.icon || '➕'}</span>`;
+                        `<span style="font-size: 18px; margin-right: 5px;">${c.icon || }</span>`;
                     html += `<label class="custom-option">
                                 <input type="checkbox" value="${c.name}" data-price="${c.price}">
                                 ${extraImage} ${c.name} (+R${c.price})
@@ -735,7 +735,7 @@
         function loadCart() {
             $.get('/Home/GetCart', function (data) {
                 if (!data.items || !data.items.length) {
-                    $('#cartItems').html('<p style="text-align:center; padding:20px;">🛒 Your cart is empty</p>');
+                    $('#cartItems').html('<p style="text-align:center; padding:20px;"> Your cart is empty</p>');
                     $('#cartSummary').hide();
                     return;
                 }
@@ -743,7 +743,7 @@
                 data.items.forEach(i => {
                     let itemIconHtml = i.itemIcon && i.itemIcon.startsWith('/') ?
                         `<img src="${i.itemIcon}" style="width: 30px; height: 30px; border-radius: 8px; object-fit: cover; margin-right: 10px; vertical-align: middle;" onerror="this.style.display='none'">` :
-                        `<span style="font-size: 20px; margin-right: 10px;">${i.itemIcon || '🍽️'}</span>`;
+                        `<span style="font-size: 20px; margin-right: 10px;">${i.itemIcon || }</span>`;
 
                     html += `<div class="cart-item">
                                 <div style="display: flex; align-items: center;">
@@ -752,8 +752,8 @@
                                     <button class="remove-btn" onclick="removeFromCart(${i.index})">✕</button>
                                 </div>
                                 📍 ${i.restaurantName}<br>
-                                ${i.extras && i.extras.length ? `<div class="cart-extras">✨ + ${i.extras.join(', ')}</div>` : ''}
-                                <div>💰 R${i.totalPrice.toFixed(2)}</div>
+                                ${i.extras && i.extras.length ? `<div class="cart-extras"> + ${i.extras.join(', ')}</div>` : ''}
+                                <div> R${i.totalPrice.toFixed(2)}</div>
                              </div>`;
                 });
                 $('#cartItems').html(html);
@@ -763,14 +763,14 @@
 
                 $('#cartSummary').html(`
                     <div class="summary">
-                        <div class="summary-row"><span>📦 Subtotal:</span><span>R${data.subtotal.toFixed(2)}</span></div>
-                        <div class="summary-row"><span>🚚 Delivery:</span><span>R${data.deliveryFee.toFixed(2)}</span></div>
-                        <div class="promo-group"><input type="text" id="promoCode" placeholder="🏷️ Enter promo code (CRAVE20, CRAVE10, FREEDELIVERY)"><button onclick="applyPromo()" style="background:#FF6B35; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">Apply</button></div>
+                        <div class="summary-row"><span> Subtotal:</span><span>R${data.subtotal.toFixed(2)}</span></div>
+                        <div class="summary-row"><span> Delivery:</span><span>R${data.deliveryFee.toFixed(2)}</span></div>
+                        <div class="promo-group"><input type="text" id="promoCode" placeholder=" Enter promo code (CRAVE20, CRAVE10, FREEDELIVERY)"><button onclick="applyPromo()" style="background:#FF6B35; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">Apply</button></div>
                         <div class="points-group"><input type="number" id="pointsInput" placeholder="⭐ Enter loyalty points"><button onclick="applyPoints()" style="background:#9B59B6; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">Apply</button></div>
                         <div id="pointsAvailable" style="font-size:12px; color:#666; margin-bottom:10px;"></div>
-                        <div class="summary-row"><span>💳 Payment:</span><select id="paymentMethod" class="payment-select"><option>💳 Credit Card</option><option>🏦 EFT</option><option>📱 PayFast</option></select></div>
-                        <div class="summary-row total"><span>💰 TOTAL:</span><span>R${total.toFixed(2)}</span></div>
-                        <button class="place-order-btn" onclick="placeOrder()">✅ PLACE ORDER</button>
+                        <div class="summary-row"><span> Payment:</span><select id="paymentMethod" class="payment-select"><option> Credit Card</option><option> EFT</option><option> PayFast</option></select></div>
+                        <div class="summary-row total"><span> TOTAL:</span><span>R${total.toFixed(2)}</span></div>
+                        <button class="place-order-btn" onclick="placeOrder()"> PLACE ORDER</button>
                     </div>
                 `).show();
                 loadPoints();
@@ -829,7 +829,7 @@
 
                     if (currentStage === driverStages.length - 1) {
                         clearInterval(driverInterval);
-                        addNotification("✅ Order delivered successfully!");
+                        addNotification(" Order delivered successfully!");
                     }
                 } else {
                     clearInterval(driverInterval);
@@ -846,7 +846,7 @@
 
             let historyHtml = '<strong>📍 Trip Timeline:</strong><br>';
             for (let i = 0; i <= currentStage; i++) {
-                let icon = i === currentStage ? '🔄' : '✅';
+                let icon = i === currentStage ?  : '✅';
                 historyHtml += `<div style="padding: 3px 0; border-bottom: 1px solid #34495e;">${icon} ${driverStages[i].status}</div>`;
             }
             $('#driverHistory').html(historyHtml);
@@ -883,12 +883,12 @@
         }
 
         function removeFromCart(i) {
-            $.post('/Home/RemoveFromCart', { index: i }, () => { loadCart(); updateCount(); showToast("🗑️ Item removed", false); });
+            $.post('/Home/RemoveFromCart', { index: i }, () => { loadCart(); updateCount(); showToast(" Item removed", false); });
         }
 
         function clearCart() {
             if (confirm('Clear entire cart?')) {
-                $.post('/Home/ClearCart', () => { loadCart(); updateCount(); showToast("🧹 Cart cleared", false); });
+                $.post('/Home/ClearCart', () => { loadCart(); updateCount(); showToast(" Cart cleared", false); });
             }
         }
 
@@ -909,23 +909,23 @@
             startDriverTracking();
 
             $('#notificationPanel').show();
-            $('#orderNotifications').html('<div class="notification-item">⏳ Processing your order...</div>');
+            $('#orderNotifications').html('<div class="notification-item"> Processing your order...</div>');
 
-            addNotification("🔄 Connecting to restaurant...");
-            setTimeout(() => addNotification("📋 Order received by restaurant"), 500);
-            setTimeout(() => addNotification("👨‍🍳 Chef is preparing your meal"), 1000);
-            setTimeout(() => addNotification("✅ Meal is ready! Packing in progress"), 2000);
-            setTimeout(() => addNotification("🚗 Driver assigned to your order"), 2500);
-            setTimeout(() => addNotification("🚚 Driver is on the way!"), 3000);
+            addNotification(" Connecting to restaurant...");
+            setTimeout(() => addNotification(" Order received by restaurant"), 500);
+            setTimeout(() => addNotification(" Chef is preparing your meal"), 1000);
+            setTimeout(() => addNotification(" Meal is ready! Packing in progress"), 2000);
+            setTimeout(() => addNotification(" Driver assigned to your order"), 2500);
+            setTimeout(() => addNotification(" Driver is on the way!"), 3000);
 
             $.post('/Home/PlaceOrder', { paymentMethod: pm, total: total }, function (r) {
                 if (r.success) {
                     addNotification("✅ Order completed successfully!");
                     addNotification(`⭐ Earned ${r.pointsEarned} loyalty points!`);
-                    addNotification(`📊 ${r.loggerSummary}`);
+                    addNotification(` ${r.loggerSummary}`);
 
                     setTimeout(() => {
-                        alert("✅ Order placed successfully!\n\n" + r.loggerSummary + "\n\n⭐ Earned " + r.pointsEarned + " points!\n💰 Total points: " + r.totalPoints);
+                        alert("✅ Order placed successfully!\n\n" + r.loggerSummary + "\n\n⭐ Earned " + r.pointsEarned + " points!\n Total points: " + r.totalPoints);
                         closeCart();
                         updateCount();
                         currentDiscount = 0;
@@ -937,12 +937,12 @@
                         }, 8000);
                     }, 1000);
                 } else {
-                    addNotification("❌ Order failed: " + r.message);
-                    showToast("❌ Order failed", true);
+                    addNotification(" Order failed: " + r.message);
+                    showToast(" Order failed", true);
                 }
             }).fail(() => {
-                addNotification("❌ Network error. Please try again.");
-                showToast("❌ Error placing order", true);
+                addNotification(" Network error. Please try again.");
+                showToast("Error placing order", true);
             });
         }
 
