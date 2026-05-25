@@ -198,6 +198,25 @@ namespace CraveCart.Controllers
             return View(completedTasks);
         }
 
+        // ========== DELIVERY HISTORY ==========
+
+        [HttpGet]
+        public IActionResult DeliveryHistory()
+        {
+            if (_currentDriver == null) return RedirectToAction("Login");
+
+            // Get completed deliveries for this driver
+            var completedDeliveries = _assignedTasks
+                .Where(t => t.Status == "Completed" || t.Status == "Delivered")
+                .OrderByDescending(t => t.DeliveryTime)
+                .ToList();
+
+            ViewBag.DriverName = _currentDriver.Name;
+            ViewBag.DriverStatus = _currentDriver.CurrentStatus;
+
+            return View(completedDeliveries);
+        }
+
         [HttpGet]
         public IActionResult Profile()
         {

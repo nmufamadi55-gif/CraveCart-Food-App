@@ -1,0 +1,501 @@
+﻿@{
+    ViewData["Title"] = "Order Details - Restaurant";
+    Layout = "~/Views/Shared/_RestaurantLayout.cshtml";
+}
+@model CraveCart.Controllers.RestaurantOrder
+
+<div class="order-details-container">
+    <div class="page-header">
+        <h1>📋 Order Details</h1>
+        <a href="/Restaurant/Orders" class="back-btn">← Back to Orders</a>
+    </div>
+
+    @if (Model == null)
+    {
+        <div class="empty-state">
+            <div class="empty-icon">❌</div>
+            <h3>Order Not Found</h3>
+            <p>The order you're looking for does not exist.</p>
+            <a href="/Restaurant/Orders" class="back-dashboard">Back to Orders</a>
+        </div>
+    }
+    else
+    {
+        <div class="details-card">
+            <div class="status-section">
+                <div class="status-header">
+                    <span class="order-id">Order #@Model.OrderId</span>
+                    <span class="status-badge @GetStatusClass(Model.Status)">
+                        @GetStatusIcon(Model.Status) @Model.Status
+                    </span>
+                </div>
+                <div class="order-time">📅 Placed on @Model.OrderTime.ToString("MMMM dd, yyyy - h:mm tt")</div>
+            </div>
+
+            <div class="details-grid">
+                <div class="info-section">
+                    <h3>👤 Customer Information</h3>
+                    <div class="info-row">
+                        <span class="label">Name:</span>
+                        <span class="value">@Model.CustomerName</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Phone:</span>
+                        <span class="value">@Model.CustomerPhone</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Address:</span>
+                        <span class="value">@Model.CustomerAddress</span>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>💰 Payment Information</h3>
+                    <div class="info-row">
+                        <span class="label">Subtotal:</span>
+                        <span class="value">R @Model.Subtotal.ToString("N2")</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Delivery Fee:</span>
+                        <span class="value">R @Model.DeliveryFee.ToString("N2")</span>
+                    </div>
+                    <div class="info-row total">
+                        <span class="label">Total:</span>
+                        <span class="value">R @Model.Total.ToString("N2")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="items-section">
+                <h3>🍽️ Order Items</h3>
+                @if (Model.Items != null && Model.Items.Any())
+                {
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@item.Name</strong>
+                                        @if (item.Customizations != null && item.Customizations.Any())
+                                        {
+                                            <br>
+                                            <span class="customizations">+ @string.Join(", ", item.Customizations)</span>
+                                        }
+                                    </td>
+                                    <td>@item.Quantity</td>
+                                    <td>R @item.Price.ToString("N2")</td>
+                                    <td class="item-total">R @((item.Price * item.Quantity).ToString("N2"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="subtotal-row">
+                                <td colspan="3" class="text-right">Subtotal:</td>
+                                <td>R @Model.Subtotal.ToString("N2")</td>
+                            </tr>
+                            <tr class="delivery-row">
+                                <td colspan="3" class="text-right">Delivery Fee:</td>
+                                <td>R @Model.DeliveryFee.ToString("N2")</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                                <td class="total-amount">R @Model.Total.ToString("N2")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+                    <p class="no-items">No items details available</p>
+                }
+            </div>
+
+            @if (Model.Status == "New")
+            {
+                <div class="action-section">
+                    <button class="btn-accept" onclick="updateStatus(@Model.OrderId, 'Preparing')">
+                        ✅ Accept & Start Preparing
+                    </button>
+                </div>
+            }
+            else if (Model.Status == "Preparing")
+            {
+                <div class="action-section">
+                    <button class="btn-ready" onclick="updateStatus(@Model.OrderId, 'Ready')">
+                        ✅ Mark as Ready
+                    </button>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function showToast(msg, isErr) {
+        let t = $('#toast');
+        t.text(msg).css('background', isErr ? '#e74c3c' : '#27ae60').fadeIn(200);
+        setTimeout(() => t.fadeOut(300), 3000);
+    }
+
+    function updateStatus(orderId, status) {
+        $.ajax({
+            url: '/Restaurant/UpdateOrderStatus',
+            type: 'POST',
+            data: { orderId: orderId, status: status },
+            success: function(response) {
+                if (response.success) {
+                    showToast(`Order status updated to ${status}!`, false);
+                    setTimeout(function() {
+                        window.location.href = '/Restaurant/Orders';
+                    }, 1000);
+                } else {
+                    showToast('Error updating order status', true);
+                }
+            },
+            error: function() {
+                showToast('Error updating order status', true);
+            }
+        });
+    }
+
+    function getStatusClass(status) {
+        switch(status) {
+            case 'New': return 'new';
+            case 'Preparing': return 'preparing';
+            case 'Ready': return 'ready';
+            case 'OutForDelivery': return 'delivery';
+            case 'Completed': return 'completed';
+            default: return '';
+        }
+    }
+
+    function getStatusIcon(status) {
+        switch(status) {
+            case 'New': return '🆕';
+            case 'Preparing': return '👨‍🍳';
+            case 'Ready': return '✅';
+            case 'OutForDelivery': return '🚚';
+            case 'Completed': return '🎉';
+            default: return '📋';
+        }
+    }
+
+    @functions {
+        public string GetStatusClass(string status)
+        {
+            switch (status)
+            {
+                case "New": return "new";
+                case "Preparing": return "preparing";
+                case "Ready": return "ready";
+                case "OutForDelivery": return "delivery";
+                case "Completed": return "completed";
+                default: return "";
+            }
+        }
+
+        public string GetStatusIcon(string status)
+        {
+            switch (status)
+            {
+                case "New": return "🆕";
+                case "Preparing": return "👨‍🍳";
+                case "Ready": return "✅";
+                case "OutForDelivery": return "🚚";
+                case "Completed": return "🎉";
+                default: return "📋";
+            }
+        }
+    }
+</script>
+
+<style>
+    .order-details-container {
+        padding: 20px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+        .page-header h1 {
+            color: #FF6B35;
+            margin: 0;
+        }
+
+    .back-btn {
+        background: #666;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+    .details-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .status-section {
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .status-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .order-id {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .status-badge {
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+        .status-badge.new {
+            background: #FF6B35;
+            color: white;
+        }
+
+        .status-badge.preparing {
+            background: #3498db;
+            color: white;
+        }
+
+        .status-badge.ready {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .status-badge.delivery {
+            background: #9B59B6;
+            color: white;
+        }
+
+        .status-badge.completed {
+            background: #95a5a6;
+            color: white;
+        }
+
+    .order-time {
+        color: #999;
+        font-size: 14px;
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .info-section h3 {
+        color: #FF6B35;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+
+    .info-row {
+        margin-bottom: 10px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+        .info-row .label {
+            font-weight: bold;
+            width: 100px;
+            color: #666;
+        }
+
+        .info-row .value {
+            color: #333;
+            flex: 1;
+        }
+
+        .info-row.total .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+    .items-section h3 {
+        color: #FF6B35;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+        .items-table th, .items-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .items-table th {
+            background: #f5f5f5;
+        }
+
+    .customizations {
+        font-size: 11px;
+        color: #999;
+    }
+
+    .item-total {
+        font-weight: bold;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .subtotal-row td, .delivery-row td {
+        padding: 8px 12px;
+    }
+
+    .total-row td {
+        padding: 12px;
+        border-top: 2px solid #ddd;
+    }
+
+    .total-amount {
+        font-weight: bold;
+        color: #FF6B35;
+        font-size: 18px;
+    }
+
+    .action-section {
+        text-align: right;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn-accept, .btn-ready {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .btn-accept {
+        background: #2ecc71;
+        color: white;
+    }
+
+    .btn-ready {
+        background: #3498db;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px;
+        background: white;
+        border-radius: 15px;
+    }
+
+    .empty-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+    }
+
+    .back-dashboard {
+        display: inline-block;
+        background: #FF6B35;
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #333;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        display: none;
+        z-index: 1000;
+    }
+
+    @@media (max-width: 768px) {
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .status-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .info-row {
+            flex-direction: column;
+        }
+
+            .info-row .label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+        .action-section {
+            text-align: center;
+        }
+
+        .btn-accept, .btn-ready {
+            width: 100%;
+        }
+
+        .items-table {
+            font-size: 12px;
+        }
+
+            .items-table th, .items-table td {
+                padding: 6px;
+            }
+    }
+</style>

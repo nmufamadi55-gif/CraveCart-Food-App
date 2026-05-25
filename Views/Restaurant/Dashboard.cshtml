@@ -12,23 +12,20 @@
     <!-- Stats Grid -->
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon">📦</div>
-            <div class="stat-value">@ViewBag.Stats.TodayOrders</div>
+            <div class="stat-value">@ViewBag.Stats?.TodayOrders</div>
             <div class="stat-label">Today's Orders</div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">💰</div>
-            <div class="stat-value">R @ViewBag.Stats.TodayRevenue.ToString("N2")</div>
+            <div class="stat-value">R @(ViewBag.Stats?.TodayRevenue?.ToString("N2") ?? "0.00")</div>
             <div class="stat-label">Today's Revenue</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">⭐</div>
-            <div class="stat-value">@ViewBag.Stats.AverageRating.ToString("F1")</div>
+            <div class="stat-value">@(ViewBag.Stats?.AverageRating?.ToString("F1") ?? "0.0")</div>
             <div class="stat-label">Average Rating</div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">⏱️</div>
-            <div class="stat-value">@ViewBag.Stats.AveragePreparationTime min</div>
+            <div class="stat-value">@(ViewBag.Stats?.AveragePreparationTime ?? 0) min</div>
             <div class="stat-label">Avg Prep Time</div>
         </div>
     </div>
@@ -45,15 +42,26 @@
 
     <!-- Recent Orders -->
     <div class="recent-orders">
-        <h3>📋 Recent Orders</h3>
-        <table class="orders-table">
-            <thead>
-                <tr><th>Order #</th><th>Customer</th><th>Time</th><th>Total</th><th>Status</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-                @if (ViewBag.RecentOrders != null && ViewBag.RecentOrders.Any())
-                {
-                    foreach (var order in ViewBag.RecentOrders)
+        <h3> Recent Orders</h3>
+        @{
+            var recentOrders = ViewBag.RecentOrders as IEnumerable<CraveCart.Controllers.RestaurantOrder>;
+        }
+
+        @if (recentOrders != null && recentOrders.Any())
+        {
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Time</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in recentOrders)
                     {
                         <tr>
                             <td>#@order.OrderId</td>
@@ -70,22 +78,24 @@
                             </td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr><td colspan="6" style="text-align: center;">No recent orders</td></tr>
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="no-orders">
+                <p>No recent orders found.</p>
+            </div>
+        }
     </div>
 
     <!-- Quick Actions -->
     <div class="quick-actions">
         <h3>Quick Actions</h3>
         <div class="action-buttons">
-            <a href="/Restaurant/Orders" class="action-btn">📋 View All Orders</a>
-            <a href="/Restaurant/ManageMenu" class="action-btn">📝 Manage Menu</a>
-            <a href="/Restaurant/Reports" class="action-btn">📊 View Reports</a>
+            <a href="/Restaurant/Orders" class="action-btn">View All Orders</a>
+            <a href="/Restaurant/ManageMenu" class="action-btn">Manage Menu</a>
+            <a href="/Restaurant/Reports" class="action-btn"> View Reports</a>
         </div>
     </div>
 </div>
@@ -283,6 +293,12 @@
         cursor: pointer;
     }
 
+    .no-orders {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+    }
+
     .quick-actions {
         background: white;
         border-radius: 15px;
@@ -301,5 +317,23 @@
         padding: 10px 20px;
         border-radius: 8px;
         text-decoration: none;
+    }
+
+    @@media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .orders-table {
+            font-size: 12px;
+        }
+
+            .orders-table th, .orders-table td {
+                padding: 8px;
+            }
     }
 </style>

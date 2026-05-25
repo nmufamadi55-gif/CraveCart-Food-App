@@ -1,0 +1,265 @@
+﻿@{
+    ViewData["Title"] = "Driver Login - CraveCart";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Driver Login - CraveCart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .login-header h1 {
+                color: #2c3e50;
+                font-size: 32px;
+            }
+
+            .login-header p {
+                color: #666;
+                margin-top: 10px;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                color: #333;
+                font-weight: bold;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                font-size: 14px;
+                transition: border-color 0.3s;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: #FF6B35;
+                }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+            .btn-login:hover {
+                background: #1a252f;
+            }
+
+            .btn-login:disabled {
+                background: #95a5a6;
+                cursor: not-allowed;
+            }
+
+        .error-message {
+            background: #fee;
+            color: #c00;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .back-link a {
+                color: #FF6B35;
+                text-decoration: none;
+            }
+
+                .back-link a:hover {
+                    text-decoration: underline;
+                }
+
+        .demo-credentials {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+            .demo-credentials h4 {
+                margin-bottom: 8px;
+                color: #2c3e50;
+            }
+
+            .demo-credentials p {
+                margin: 5px 0;
+                color: #666;
+            }
+
+            .demo-credentials span {
+                font-weight: bold;
+                color: #FF6B35;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🚚 Driver Portal</h1>
+            <p>CraveCart Delivery Partner</p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" required placeholder="driver@example.com">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" required placeholder="Enter password">
+        </div>
+        <button class="btn-login" id="loginBtn" onclick="driverLogin()">Login to Dashboard</button>
+
+        <div class="back-link">
+            <a href="/">← Back to Customer Site</a>
+        </div>
+
+        <div class="demo-credentials">
+            <h4>📋 Demo Credentials</h4>
+            <p>Email: <span>michael@delivery.com</span> | Password: <span>driver123</span></p>
+            <p>Email: <span>sarah@delivery.com</span> | Password: <span>driver123</span></p>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Show toast notification
+        function showToast(msg, isErr) {
+            let t = $('#toast');
+            t.text(msg).css('background', isErr ? '#e74c3c' : '#27ae60').fadeIn(200);
+            setTimeout(() => t.fadeOut(300), 3000);
+        }
+
+        // Show error message
+        function showError(msg) {
+            $('#errorMessage').text(msg).fadeIn(200);
+            setTimeout(() => $('#errorMessage').fadeOut(300), 3000);
+        }
+
+        // Driver login function
+        function driverLogin() {
+            let email = $('#email').val();
+            let password = $('#password').val();
+            let btn = $('#loginBtn');
+
+            if (!email || !password) {
+                showError('Please enter email and password');
+                return;
+            }
+
+            // Disable button and show loading
+            btn.prop('disabled', true).text('Logging in...');
+
+            $.ajax({
+                url: '/Driver/Login',
+                type: 'POST',
+                data: { email: email, password: password },
+                success: function(response) {
+                    if (response.success || response.redirectUrl) {
+                        showToast('Login successful! Redirecting...', false);
+                        setTimeout(() => {
+                            window.location.href = '/Driver/Dashboard';
+                        }, 1000);
+                    } else if (response === 'success' || response.includes('Dashboard')) {
+                        window.location.href = '/Driver/Dashboard';
+                    } else {
+                        showError('Invalid credentials. Please try again.');
+                        btn.prop('disabled', false).text('Login to Dashboard');
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 302 || xhr.status === 200) {
+                        window.location.href = '/Driver/Dashboard';
+                    } else {
+                        showError('Network error. Please try again.');
+                        btn.prop('disabled', false).text('Login to Dashboard');
+                    }
+                }
+            });
+        }
+
+        // Allow Enter key to submit
+        $('#password').keypress(function(e) {
+            if (e.which === 13) {
+                driverLogin();
+            }
+        });
+
+        // Check if already logged in
+        $(document).ready(function() {
+            $.get('/Driver/CheckAuth', function(response) {
+                if (response.isLoggedIn) {
+                    window.location.href = '/Driver/Dashboard';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

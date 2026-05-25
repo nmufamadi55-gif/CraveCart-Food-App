@@ -1,0 +1,245 @@
+﻿@{
+    ViewData["Title"] = "Earnings - Driver";
+    Layout = "~/Views/Shared/_DriverLayout.cshtml";
+}
+@model List<CraveCart.Controllers.DeliveryTask>
+
+<div class="earnings-container">
+    <div class="page-header">
+        <h1>💰 My Earnings</h1>
+        <p>Track your delivery earnings</p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-info">
+                <div class="summary-label">Total Deliveries</div>
+                <div class="summary-value" id="totalDeliveries">@(ViewBag.TotalDeliveries ?? 0)</div>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-info">
+                <div class="summary-label">Total Earnings</div>
+                <div class="summary-value">R @(ViewBag.TotalEarnings?.ToString("N2") ?? "0.00")</div>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-info">
+                <div class="summary-label">Average per Delivery</div>
+                <div class="summary-value">R @(ViewBag.AveragePerDelivery?.ToString("N2") ?? "0.00")</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings Chart -->
+    <div class="chart-card">
+        <h3> Weekly Earnings</h3>
+        <canvas id="earningsChart" style="height: 250px;"></canvas>
+    </div>
+
+    <!-- Earnings History Table -->
+    <div class="history-card">
+        <h3> Delivery History</h3>
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-history">
+                <p>No delivery history found.</p>
+            </div>
+        }
+        else
+        {
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Restaurant</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Delivery Fee</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var task in Model)
+                    {
+                        <tr>
+                            <td>#@task.OrderId</td>
+                            <td>@task.RestaurantName</td>
+                            <td>@task.CustomerName</td>
+                            <td>@(task.DeliveryTime?.ToString("MMM dd, yyyy") ?? "Pending")</td>
+                            <td class="fee-amount">R @task.DeliveryFee.ToString("N2")</td>
+                            <td><span class="status-badge completed">@task.Status</span></td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="4"><strong>Total</strong></td>
+                        <td><strong>R @(Model.Sum(t => t.DeliveryFee).ToString("N2"))</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Sample weekly earnings data - replace with actual data from controller
+    const weeklyData = {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        earnings: [250, 180, 220, 300, 350, 280, 200]
+    };
+
+    const ctx = document.getElementById('earningsChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: weeklyData.labels,
+            datasets: [{
+                label: 'Earnings (R)',
+                data: weeklyData.earnings,
+                backgroundColor: '#FF6B35',
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'top' }
+            }
+        }
+    });
+</script>
+
+<style>
+    .earnings-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        margin-bottom: 30px;
+    }
+
+        .page-header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .summary-icon {
+        font-size: 40px;
+    }
+
+    .summary-info {
+        flex: 1;
+    }
+
+    .summary-label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .summary-value {
+        font-size: 28px;
+        font-weight: bold;
+        color: #FF6B35;
+    }
+
+    .chart-card, .history-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+        .chart-card h3, .history-card h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .history-table th, .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-table th {
+            background: #f5f5f5;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .history-table .fee-amount {
+            color: #FF6B35;
+            font-weight: bold;
+        }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+        .status-badge.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+    .total-row {
+        background: #f9f9f9;
+        font-weight: bold;
+    }
+
+        .total-row td {
+            border-top: 2px solid #ddd;
+        }
+
+    .empty-history {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+    }
+
+    @@media (max-width: 768px) {
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .history-table {
+            font-size: 12px;
+        }
+
+            .history-table th, .history-table td {
+                padding: 8px;
+            }
+    }
+</style>
