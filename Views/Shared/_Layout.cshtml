@@ -6,89 +6,168 @@
     <title>@ViewData["Title"] - CraveCart</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CraveCart.styles.css" asp-append-version="true" />
-    <style>
-        /* Portal dropdown styles */
+    <link rel="stylesheet" href="~/CraveCart.styles.css" asp-append-version="true" />    <style>
+        :root {
+            --nav-ink: #182027;
+            --nav-muted: #64707d;
+            --nav-line: #e6e9ed;
+            --nav-brand: #f05a28;
+            --nav-brand-dark: #c83f17;
+        }
+
+        header.site-header {
+            position: sticky;
+            top: 12px;
+            z-index: 120;
+            width: min(1180px, calc(100% - 32px));
+            margin: 14px auto 0;
+        }
+
+        header.site-header .navbar {
+            display: flex !important;
+            margin-bottom: 0 !important;
+            border: 1px solid rgba(255, 255, 255, 0.7) !important;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.88) !important;
+            box-shadow: 0 14px 34px rgba(24, 32, 39, 0.08);
+            backdrop-filter: blur(18px);
+        }
+
+        .navbar-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--nav-ink) !important;
+            font-weight: 900;
+        }
+
+        .navbar-brand img {
+            width: 36px;
+            height: 36px !important;
+            margin-right: 0 !important;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 8px 18px rgba(240, 90, 40, 0.22);
+        }
+
+        .navbar .nav-link {
+            color: var(--nav-muted) !important;
+            font-weight: 800;
+        }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link:focus {
+            color: var(--nav-brand-dark) !important;
+        }
+
         .portal-dropdown {
             position: relative;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             margin-left: 15px;
         }
 
         .portal-btn {
-            background: #FF6B35;
-            color: white;
-            padding: 6px 15px;
-            border-radius: 8px;
-            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 10px 16px;
+            border: 0;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--nav-brand), #ff8a3d);
+            color: #fff;
+            box-shadow: 0 12px 28px rgba(240, 90, 40, 0.26);
             cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
-            transition: background 0.3s;
+            font-weight: 900;
+            transition: transform 180ms ease, box-shadow 180ms ease;
         }
 
-            .portal-btn:hover {
-                background: #e55a2b;
-            }
+        .portal-btn:hover,
+        .portal-btn:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 34px rgba(240, 90, 40, 0.3);
+        }
 
         .portal-dropdown-content {
-            display: none;
             position: absolute;
             right: 0;
-            background-color: white;
-            min-width: 180px;
-            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-            z-index: 1000;
-            border-radius: 8px;
+            top: calc(100% + 10px);
+            display: none;
+            min-width: 230px;
             overflow: hidden;
+            border: 1px solid var(--nav-line);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 18px 45px rgba(24, 32, 39, 0.14);
+            backdrop-filter: blur(18px);
         }
 
-        .portal-dropdown:hover .portal-dropdown-content {
+        .portal-dropdown:hover .portal-dropdown-content,
+        .portal-dropdown:focus-within .portal-dropdown-content {
             display: block;
         }
 
         .portal-dropdown-content a {
-            color: #333;
-            padding: 12px 16px;
-            text-decoration: none;
             display: block;
-            transition: background 0.3s;
+            padding: 13px 16px;
+            color: var(--nav-ink);
+            text-decoration: none;
             font-size: 14px;
+            font-weight: 800;
         }
 
-            .portal-dropdown-content a:hover {
-                background-color: #FFF0EB;
-                color: #FF6B35;
-            }
+        .portal-dropdown-content a:hover,
+        .portal-dropdown-content a:focus {
+            background: #fff1e8;
+            color: var(--nav-brand-dark);
+        }
 
         .portal-dropdown-content hr {
-            margin: 5px 0;
-            border-color: #eee;
+            margin: 4px 12px;
+            border-color: var(--nav-line);
+            opacity: 1;
         }
 
-        /* Mobile responsive */
+        footer.footer {
+            display: block !important;
+            position: static;
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto 24px;
+            padding: 16px 0;
+            color: var(--nav-muted) !important;
+        }
+
         @@media (max-width: 768px) {
+            header.site-header {
+                top: 8px;
+                width: min(100% - 20px, 720px);
+            }
+
+            header.site-header .navbar {
+                border-radius: 16px;
+            }
+
             .navbar-collapse {
+                padding-top: 10px;
                 text-align: center;
             }
 
             .portal-dropdown {
-                margin: 10px 0;
                 display: block;
-                text-align: center;
+                margin: 10px 0 0;
             }
 
             .portal-dropdown-content {
                 position: static;
+                margin-top: 8px;
                 box-shadow: none;
-                border: 1px solid #eee;
-                margin-top: 5px;
             }
         }
     </style>
 </head>
 <body>
-    <header>
+    <header class="site-header">
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
@@ -111,13 +190,13 @@
 
                     <!-- Portal Dropdown Menu -->
                     <div class="portal-dropdown">
-                        <button class="portal-btn"> Portals ▼</button>
+                        <button class="portal-btn" type="button">Login Portals</button>
                         <div class="portal-dropdown-content">
-                            <a href="/Admin/Login"> Admin Portal</a>
-                            <a href="/Restaurant/Login"> Restaurant Portal</a>
-                            <a href="/Driver/Login"> Driver Portal</a>
+                            <a href="/Admin/Login">Admin Portal</a>
+                            <a href="/Restaurant/Login">Restaurant Portal</a>
+                            <a href="/Driver/Login">Driver Portal</a>
                             <hr>
-                            <a href="/">🍔 Customer Portal</a>
+                            <a href="/">Customer Portal</a>
                         </div>
                     </div>
                 </div>

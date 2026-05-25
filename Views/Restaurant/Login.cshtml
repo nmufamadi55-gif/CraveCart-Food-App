@@ -4,121 +4,302 @@
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Restaurant Login - CraveCart</title>
     <style>
+        :root {
+            --ink: #182027;
+            --muted: #64707d;
+            --line: #e6e9ed;
+            --brand: #f05a28;
+            --brand-dark: #c83f17;
+            --gold: #f6b23b;
+            --green: #1f9d69;
+            --teal: #157f8f;
+            --shadow: 0 18px 45px rgba(24, 32, 39, 0.14);
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 28px 16px;
+            color: var(--ink);
+            background: linear-gradient(135deg, rgba(24, 32, 39, 0.78), rgba(24, 32, 39, 0.28)), url("/images/backgrounds/food-delivery-bg.jpg") center / cover no-repeat fixed;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
         }
 
-        .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 400px;
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .login-shell {
+            width: min(940px, 100%);
+            display: grid;
+            grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.72fr);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .login-brand {
+            min-height: 560px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: clamp(28px, 5vw, 48px);
+            color: #fff;
+            background: linear-gradient(135deg, rgba(24, 32, 39, 0.84), rgba(24, 32, 39, 0.24)), url("/images/menu/whopper.jpg") center / cover no-repeat;
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.08rem;
+            font-weight: 900;
+        }
+
+        .brand-mark img {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            object-fit: cover;
+            box-shadow: 0 8px 18px rgba(240, 90, 40, 0.28);
+        }
+
+        .login-brand h1 {
+            max-width: 430px;
+            margin-top: auto;
+            font-size: clamp(2.2rem, 5vw, 4.2rem);
+            line-height: 1;
+            letter-spacing: 0;
+        }
+
+        .login-brand p {
+            max-width: 420px;
+            margin-top: 16px;
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .login-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: clamp(28px, 5vw, 46px);
+            background: #fff;
         }
 
         .login-header {
-            text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 26px;
         }
 
-            .login-header h1 {
-                color: #FF6B35;
-                font-size: 32px;
-            }
+        .eyebrow {
+            display: inline-flex;
+            margin-bottom: 10px;
+            color: var(--brand-dark);
+            font-size: 0.76rem;
+            font-weight: 900;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .login-header h2 {
+            margin: 0;
+            color: var(--ink);
+            font-size: 2rem;
+            line-height: 1.1;
+        }
+
+        .login-header p {
+            margin-top: 8px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
-            .form-group label {
-                display: block;
-                margin-bottom: 8px;
-                color: #333;
-                font-weight: bold;
-            }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--ink);
+            font-size: 0.92rem;
+            font-weight: 900;
+        }
 
-            .form-group input {
-                width: 100%;
-                padding: 12px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-            }
+        .form-group input {
+            width: 100%;
+            min-height: 48px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 0 16px;
+            color: var(--ink);
+            background: #f8fafb;
+            font: inherit;
+            outline: none;
+            transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+        }
+
+        .form-group input:focus {
+            border-color: rgba(240, 90, 40, 0.6);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(240, 90, 40, 0.12);
+        }
 
         .btn-login {
             width: 100%;
-            padding: 12px;
-            background: #FF6B35;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
+            min-height: 48px;
+            margin-top: 4px;
+            border: 0;
+            border-radius: 999px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand), #ff8a3d);
+            box-shadow: 0 12px 28px rgba(240, 90, 40, 0.26);
             cursor: pointer;
+            font-size: 1rem;
+            font-weight: 900;
+            transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+        }
+
+        .btn-login:hover,
+        .btn-login:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 34px rgba(240, 90, 40, 0.3);
+        }
+
+        .btn-login:disabled {
+            cursor: not-allowed;
+            opacity: 0.62;
+            transform: none;
         }
 
         .error-message {
-            background: #fee;
-            color: #c00;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            border: 1px solid rgba(214, 63, 47, 0.18);
+            border-radius: 14px;
+            background: #fff0ed;
+            color: #b72d21;
+            font-weight: 800;
             text-align: center;
         }
 
-        .register-link {
-            text-align: center;
-            margin-top: 20px;
+        .error-message:empty {
+            display: none;
         }
 
-            .register-link a {
-                color: #FF6B35;
-                text-decoration: none;
+        .login-links {
+            display: grid;
+            gap: 10px;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 0.92rem;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .login-links a {
+            color: var(--brand-dark);
+        }
+
+        .login-links a:hover,
+        .login-links a:focus {
+            text-decoration: underline;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            z-index: 20;
+            display: none;
+            max-width: min(420px, calc(100vw - 32px));
+            transform: translateX(-50%);
+            padding: 12px 18px;
+            border-radius: 999px;
+            background: var(--ink);
+            color: #fff;
+            box-shadow: var(--shadow);
+            font-weight: 800;
+            text-align: center;
+        }
+
+        @@media (max-width: 780px) {
+            body {
+                place-items: stretch;
             }
+
+            .login-shell {
+                grid-template-columns: 1fr;
+                border-radius: 22px;
+            }
+
+            .login-brand {
+                min-height: 270px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <h1>🍽️ Restaurant Portal</h1>
-            <p>Manage your restaurant on CraveCart</p>
-        </div>
-
-        @if (!string.IsNullOrEmpty(ViewBag.Error))
-        {
-            <div class="error-message">@ViewBag.Error</div>
-        }
-
-        <form method="post" action="/Restaurant/Login">
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" name="email" required placeholder="restaurant@example.com">
+    <main class="login-shell">
+        <section class="login-brand" aria-label="CraveCart">
+            <a class="brand-mark" href="/">
+                <img src="/images/logo.png" alt="CraveCart logo">
+                <span>CraveCart</span>
+            </a>
+            <div>
+                <h1>Serve customers faster.</h1>
+                <p>Keep menus, orders, and daily restaurant work in one clean CraveCart workspace.</p>
             </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" required placeholder="Enter password">
+        </section>
+        <section class="login-panel">
+            <div class="login-header">
+                <span class="eyebrow">Restaurant Portal</span>
+                <h2>Manage Your Store</h2>
+                <p>Sign in to update menus, review orders, and track restaurant performance.</p>
             </div>
-            <button type="submit" class="btn-login">Login to Dashboard</button>
-        </form>
-        <div class="register-link">
-            <a href="/Restaurant/Register">Don't have an account? Register your restaurant</a>
-        </div>
+
+            @if (!string.IsNullOrEmpty(ViewBag.Error))
+{
+    <div class="error-message">@ViewBag.Error</div>
+}
+
+<form method="post" action="/Restaurant/Login">
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input id="email" type="email" name="email" required placeholder="restaurant@example.com">
     </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" required placeholder="Enter password">
+    </div>
+    <button type="submit" class="btn-login">Login to Dashboard</button>
+</form>
+            <div class="login-links"><a href="/Restaurant/Register">Register your restaurant</a><a href="/">Back to Customer Site</a></div>
+        </section>
+    </main>
+
 </body>
 </html>
+

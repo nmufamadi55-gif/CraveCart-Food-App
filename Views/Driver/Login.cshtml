@@ -4,218 +4,321 @@
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Driver Login - CraveCart</title>
     <style>
+        :root {
+            --ink: #182027;
+            --muted: #64707d;
+            --line: #e6e9ed;
+            --brand: #f05a28;
+            --brand-dark: #c83f17;
+            --gold: #f6b23b;
+            --green: #1f9d69;
+            --teal: #157f8f;
+            --shadow: 0 18px 45px rgba(24, 32, 39, 0.14);
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 28px 16px;
+            color: var(--ink);
+            background: linear-gradient(135deg, rgba(24, 32, 39, 0.78), rgba(24, 32, 39, 0.28)), url("/images/backgrounds/food-delivery-bg.jpg") center / cover no-repeat fixed;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
         }
 
-        .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 400px;
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .login-shell {
+            width: min(940px, 100%);
+            display: grid;
+            grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.72fr);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .login-brand {
+            min-height: 560px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: clamp(28px, 5vw, 48px);
+            color: #fff;
+            background: linear-gradient(135deg, rgba(24, 32, 39, 0.84), rgba(24, 32, 39, 0.24)), url("/images/menu/whopper.jpg") center / cover no-repeat;
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.08rem;
+            font-weight: 900;
+        }
+
+        .brand-mark img {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            object-fit: cover;
+            box-shadow: 0 8px 18px rgba(240, 90, 40, 0.28);
+        }
+
+        .login-brand h1 {
+            max-width: 430px;
+            margin-top: auto;
+            font-size: clamp(2.2rem, 5vw, 4.2rem);
+            line-height: 1;
+            letter-spacing: 0;
+        }
+
+        .login-brand p {
+            max-width: 420px;
+            margin-top: 16px;
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .login-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: clamp(28px, 5vw, 46px);
+            background: #fff;
         }
 
         .login-header {
-            text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 26px;
         }
 
-            .login-header h1 {
-                color: #2c3e50;
-                font-size: 32px;
-            }
+        .eyebrow {
+            display: inline-flex;
+            margin-bottom: 10px;
+            color: var(--brand-dark);
+            font-size: 0.76rem;
+            font-weight: 900;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
 
-            .login-header p {
-                color: #666;
-                margin-top: 10px;
-            }
+        .login-header h2 {
+            margin: 0;
+            color: var(--ink);
+            font-size: 2rem;
+            line-height: 1.1;
+        }
+
+        .login-header p {
+            margin-top: 8px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
-            .form-group label {
-                display: block;
-                margin-bottom: 8px;
-                color: #333;
-                font-weight: bold;
-            }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--ink);
+            font-size: 0.92rem;
+            font-weight: 900;
+        }
 
-            .form-group input {
-                width: 100%;
-                padding: 12px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                font-size: 14px;
-                transition: border-color 0.3s;
-            }
+        .form-group input {
+            width: 100%;
+            min-height: 48px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 0 16px;
+            color: var(--ink);
+            background: #f8fafb;
+            font: inherit;
+            outline: none;
+            transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+        }
 
-                .form-group input:focus {
-                    outline: none;
-                    border-color: #FF6B35;
-                }
+        .form-group input:focus {
+            border-color: rgba(240, 90, 40, 0.6);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(240, 90, 40, 0.12);
+        }
 
         .btn-login {
             width: 100%;
-            padding: 12px;
-            background: #2c3e50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
+            min-height: 48px;
+            margin-top: 4px;
+            border: 0;
+            border-radius: 999px;
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand), #ff8a3d);
+            box-shadow: 0 12px 28px rgba(240, 90, 40, 0.26);
             cursor: pointer;
-            transition: background 0.3s;
+            font-size: 1rem;
+            font-weight: 900;
+            transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
         }
 
-            .btn-login:hover {
-                background: #1a252f;
-            }
+        .btn-login:hover,
+        .btn-login:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 34px rgba(240, 90, 40, 0.3);
+        }
 
-            .btn-login:disabled {
-                background: #95a5a6;
-                cursor: not-allowed;
-            }
+        .btn-login:disabled {
+            cursor: not-allowed;
+            opacity: 0.62;
+            transform: none;
+        }
 
         .error-message {
-            background: #fee;
-            color: #c00;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            border: 1px solid rgba(214, 63, 47, 0.18);
+            border-radius: 14px;
+            background: #fff0ed;
+            color: #b72d21;
+            font-weight: 800;
             text-align: center;
+        }
+
+        .error-message:empty {
             display: none;
+        }
+
+        .login-links {
+            display: grid;
+            gap: 10px;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 0.92rem;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .login-links a {
+            color: var(--brand-dark);
+        }
+
+        .login-links a:hover,
+        .login-links a:focus {
+            text-decoration: underline;
         }
 
         .toast {
             position: fixed;
-            bottom: 20px;
             left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
+            bottom: 22px;
+            z-index: 20;
             display: none;
-            z-index: 1000;
-        }
-
-        .back-link {
+            max-width: min(420px, calc(100vw - 32px));
+            transform: translateX(-50%);
+            padding: 12px 18px;
+            border-radius: 999px;
+            background: var(--ink);
+            color: #fff;
+            box-shadow: var(--shadow);
+            font-weight: 800;
             text-align: center;
-            margin-top: 20px;
         }
 
-            .back-link a {
-                color: #FF6B35;
-                text-decoration: none;
+        @@media (max-width: 780px) {
+            body {
+                place-items: stretch;
             }
 
-                .back-link a:hover {
-                    text-decoration: underline;
-                }
+            .login-shell {
+                grid-template-columns: 1fr;
+                border-radius: 22px;
+            }
 
-        .demo-credentials {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 8px;
-            font-size: 12px;
+            .login-brand {
+                min-height: 270px;
+            }
         }
-
-            .demo-credentials h4 {
-                margin-bottom: 8px;
-                color: #2c3e50;
-            }
-
-            .demo-credentials p {
-                margin: 5px 0;
-                color: #666;
-            }
-
-            .demo-credentials span {
-                font-weight: bold;
-                color: #FF6B35;
-            }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <h1>🚚 Driver Portal</h1>
-            <p>CraveCart Delivery Partner</p>
-        </div>
+    <main class="login-shell">
+        <section class="login-brand" aria-label="CraveCart">
+            <a class="brand-mark" href="/">
+                <img src="/images/logo.png" alt="CraveCart logo">
+                <span>CraveCart</span>
+            </a>
+            <div>
+                <h1>Deliver with confidence.</h1>
+                <p>A simple sign-in experience for CraveCart delivery partners on the move.</p>
+            </div>
+        </section>
+        <section class="login-panel">
+            <div class="login-header">
+                <span class="eyebrow">Driver Portal</span>
+                <h2>Start Delivering</h2>
+                <p>Sign in to view deliveries, earnings, history, and profile details.</p>
+            </div>
 
-        <div id="errorMessage" class="error-message"></div>
+            <div id="errorMessage" class="error-message"></div>
 
-        <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="email" required placeholder="driver@example.com">
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="password" required placeholder="Enter password">
-        </div>
-        <button class="btn-login" id="loginBtn" onclick="driverLogin()">Login to Dashboard</button>
-
-        <div class="back-link">
-            <a href="/">← Back to Customer Site</a>
-        </div>
-
-        <div class="demo-credentials">
-            <h4>📋 Demo Credentials</h4>
-            <p>Email: <span>michael@delivery.com</span> | Password: <span>driver123</span></p>
-            <p>Email: <span>sarah@delivery.com</span> | Password: <span>driver123</span></p>
-        </div>
-    </div>
-
+<div class="form-group">
+    <label for="email">Email Address</label>
+    <input id="email" type="email" required placeholder="driver@example.com">
+</div>
+<div class="form-group">
+    <label for="password">Password</label>
+    <input id="password" type="password" required placeholder="Enter password">
+</div>
+<button class="btn-login" id="loginBtn" type="button" onclick="driverLogin()">Login to Dashboard</button>
+            <div class="login-links"><a href="/">Back to Customer Site</a></div>
+        </section>
+    </main>
     <div id="toast" class="toast"></div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
     <script>
-        // Show toast notification
         function showToast(msg, isErr) {
-            let t = $('#toast');
-            t.text(msg).css('background', isErr ? '#e74c3c' : '#27ae60').fadeIn(200);
-            setTimeout(() => t.fadeOut(300), 3000);
+            let toast = $('#toast');
+            toast.text(msg).css('background', isErr ? '#d63f2f' : '#1f9d69').fadeIn(200);
+            setTimeout(() => toast.fadeOut(300), 3000);
         }
 
-        // Show error message
         function showError(msg) {
             $('#errorMessage').text(msg).fadeIn(200);
             setTimeout(() => $('#errorMessage').fadeOut(300), 3000);
         }
 
-        // Driver login function
         function driverLogin() {
             let email = $('#email').val();
             let password = $('#password').val();
-            let btn = $('#loginBtn');
+            let button = $('#loginBtn');
 
             if (!email || !password) {
                 showError('Please enter email and password');
                 return;
             }
 
-            // Disable button and show loading
-            btn.prop('disabled', true).text('Logging in...');
+            button.prop('disabled', true).text('Logging in...');
 
             $.ajax({
                 url: '/Driver/Login',
@@ -223,7 +326,7 @@
                 data: { email: email, password: password },
                 success: function(response) {
                     if (response.success || response.redirectUrl) {
-                        showToast('Login successful! Redirecting...', false);
+                        showToast('Login successful. Redirecting...', false);
                         setTimeout(() => {
                             window.location.href = '/Driver/Dashboard';
                         }, 1000);
@@ -231,7 +334,7 @@
                         window.location.href = '/Driver/Dashboard';
                     } else {
                         showError('Invalid credentials. Please try again.');
-                        btn.prop('disabled', false).text('Login to Dashboard');
+                        button.prop('disabled', false).text('Login to Dashboard');
                     }
                 },
                 error: function(xhr) {
@@ -239,20 +342,18 @@
                         window.location.href = '/Driver/Dashboard';
                     } else {
                         showError('Network error. Please try again.');
-                        btn.prop('disabled', false).text('Login to Dashboard');
+                        button.prop('disabled', false).text('Login to Dashboard');
                     }
                 }
             });
         }
 
-        // Allow Enter key to submit
         $('#password').keypress(function(e) {
             if (e.which === 13) {
                 driverLogin();
             }
         });
 
-        // Check if already logged in
         $(document).ready(function() {
             $.get('/Driver/CheckAuth', function(response) {
                 if (response.isLoggedIn) {
@@ -263,3 +364,4 @@
     </script>
 </body>
 </html>
+
