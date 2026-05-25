@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CraveCart Restaurant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .restaurant-nav {
+            background: #FF6B35;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+            .nav-links a {
+                color: white;
+                text-decoration: none;
+                padding: 8px 16px;
+                border-radius: 8px;
+                transition: background 0.3s;
+            }
+
+                .nav-links a:hover, .nav-links a.active {
+                    background: rgba(255,255,255,0.2);
+                }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="restaurant-nav">
+        <div class="nav-logo">🍔 Crave<span style="color: #2c3e50;">Cart</span></div>
+        <div class="nav-links">
+            <a href="/Restaurant/Dashboard" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")">Dashboard</a>
+            <a href="/Restaurant/Orders" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Orders" ? "active" : "")">Orders</a>
+            <a href="/Restaurant/ManageMenu" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "ManageMenu" ? "active" : "")">Menu</a>
+            <a href="/Restaurant/Reports" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Reports" ? "active" : "")">Reports</a>
+        </div>
+        <div class="nav-user">
+            <span>🍽️ @ViewBag.RestaurantName</span>
+            <a href="/Restaurant/Logout" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+    <div class="main-content">
+        @RenderBody()
+    </div>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -7,6 +7,85 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CraveCart.styles.css" asp-append-version="true" />
+    <style>
+        /* Portal dropdown styles */
+        .portal-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: 15px;
+        }
+
+        .portal-btn {
+            background: #FF6B35;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+            .portal-btn:hover {
+                background: #e55a2b;
+            }
+
+        .portal-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .portal-dropdown:hover .portal-dropdown-content {
+            display: block;
+        }
+
+        .portal-dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s;
+            font-size: 14px;
+        }
+
+            .portal-dropdown-content a:hover {
+                background-color: #FFF0EB;
+                color: #FF6B35;
+            }
+
+        .portal-dropdown-content hr {
+            margin: 5px 0;
+            border-color: #eee;
+        }
+
+        /* Mobile responsive */
+        @@media (max-width: 768px) {
+            .navbar-collapse {
+                text-align: center;
+            }
+
+            .portal-dropdown {
+                margin: 10px 0;
+                display: block;
+                text-align: center;
+            }
+
+            .portal-dropdown-content {
+                position: static;
+                box-shadow: none;
+                border: 1px solid #eee;
+                margin-top: 5px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -29,6 +108,18 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+
+                    <!-- Portal Dropdown Menu -->
+                    <div class="portal-dropdown">
+                        <button class="portal-btn"> Portals ▼</button>
+                        <div class="portal-dropdown-content">
+                            <a href="/Admin/Login"> Admin Portal</a>
+                            <a href="/Restaurant/Login"> Restaurant Portal</a>
+                            <a href="/Driver/Login"> Driver Portal</a>
+                            <hr>
+                            <a href="/">🍔 Customer Portal</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </nav>

@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CraveCart Driver</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .driver-nav {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+            .nav-logo span {
+                color: #FF6B35;
+            }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+            .nav-links a {
+                color: white;
+                text-decoration: none;
+                padding: 8px 16px;
+                border-radius: 8px;
+                transition: background 0.3s;
+            }
+
+                .nav-links a:hover, .nav-links a.active {
+                    background: #FF6B35;
+                }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .driver-status-badge {
+            background: #2ecc71;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="driver-nav">
+        <div class="nav-logo">🚚 Crave<span>Cart</span> Driver</div>
+        <div class="nav-links">
+            <a href="/Driver/Dashboard" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")">Dashboard</a>
+            <a href="/Driver/AvailableDeliveries" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "AvailableDeliveries" ? "active" : "")">Find Deliveries</a>
+            <a href="/Driver/Earnings" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Earnings" ? "active" : "")">Earnings</a>
+            <a href="/Driver/DeliveryHistory" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "DeliveryHistory" ? "active" : "")">History</a>
+            <a href="/Driver/Profile" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Profile" ? "active" : "")">Profile</a>
+        </div>
+        <div class="nav-user">
+            <span>🚚 @ViewBag.DriverName</span>
+            <span class="driver-status-badge" id="driverStatusBadge">@ViewBag.DriverStatus</span>
+            <a href="/Driver/Logout" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+    <div class="main-content">
+        @RenderBody()
+    </div>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

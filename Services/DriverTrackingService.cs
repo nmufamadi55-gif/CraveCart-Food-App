@@ -148,6 +148,11 @@ namespace CraveCart.Services
         public double Longitude { get; set; }
         public List<LocationHistory> History { get; set; }
         public DateTime StartTime { get; set; }
+        public string VehicleType { get; internal set; }
+        public string Email { get; internal set; }
+        public string Phone { get; internal set; }
+        public double Rating { get; internal set; }
+        public int TotalDeliveries { get; internal set; }
     }
 
     public class LocationHistory

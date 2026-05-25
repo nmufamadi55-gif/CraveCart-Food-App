@@ -24,9 +24,186 @@ namespace CraveCart.Controllers
         private static List<int> _pointsEarnedHistory = new List<int>();
         private static List<int> _pointsRedeemedHistory = new List<int>();
 
+        // ========== ORDER TRACKING FOR ADMIN ==========
+        private static List<CompletedOrder> _completedOrders = new List<CompletedOrder>();
+        private static List<ActiveOrder> _activeOrdersList = new List<ActiveOrder>();
+
+        // ========== STATIC PROPERTIES FOR ADMIN/RESTAURANT/DRIVER ACCESS ==========
+        public static List<Restaurant> GetRestaurants() => _restaurants;
+        public static List<CartItem> GetCartItems() => _cart;
+        public static List<CompletedOrder> GetAllOrders() => _completedOrders;
+        public static List<ActiveOrder> GetActiveOrders() => _activeOrdersList;
+
+        public static void AddRestaurant(Restaurant restaurant)
+        {
+            if (_restaurants != null)
+            {
+                _restaurants.Add(restaurant);
+            }
+        }
+
+        public static List<Restaurant> GetAllRestaurants() => _restaurants;
+
+        public static void SetRestaurants(List<Restaurant> restaurants)
+        {
+            _restaurants = restaurants;
+        }
+
+        // Real-time stats for Admin
+        public static decimal GetTodayRevenue() => _completedOrders.Where(o => o.OrderDate.Date == DateTime.Today).Sum(o => o.TotalAmount);
+        public static int GetTodayOrderCount() => _completedOrders.Count(o => o.OrderDate.Date == DateTime.Today);
+
+        public static List<object> GetTopRestaurantsData()
+        {
+            if (!_completedOrders.Any())
+            {
+                // Return sample data for demo
+                return new List<object>
+                {
+                    new { name = "Burger King", orders = 125, revenue = 6875m, rating = 4.5 },
+                    new { name = "Sweetgreen", orders = 98, revenue = 6370m, rating = 4.6 },
+                    new { name = "Nobu", orders = 76, revenue = 11780m, rating = 4.8 }
+                };
+            }
+
+            return _completedOrders
+                .GroupBy(o => o.RestaurantName)
+                .Select(g => new { name = g.Key, orders = g.Count(), revenue = g.Sum(o => o.TotalAmount), rating = 4.5 })
+                .OrderByDescending(g => g.revenue)
+                .Take(5)
+                .Select(g => new { g.name, g.orders, g.revenue, g.rating })
+                .ToList<object>();
+        }
+
+        public static List<DailyRevenue> GetWeeklyRevenueData()
+        {
+            var result = new List<DailyRevenue>();
+            for (int i = 6; i >= 0; i--)
+            {
+                var date = DateTime.Today.AddDays(-i);
+                var dayOrders = _completedOrders.Where(o => o.OrderDate.Date == date).ToList();
+                result.Add(new DailyRevenue
+                {
+                    Date = date,
+                    Amount = dayOrders.Sum(o => o.TotalAmount),
+                    OrderCount = dayOrders.Count
+                });
+            }
+
+            // If no data, return sample data for demo
+            if (result.All(r => r.Amount == 0))
+            {
+                return new List<DailyRevenue>
+                {
+                    new DailyRevenue { Date = DateTime.Now.AddDays(-6), Amount = 1200, OrderCount = 42 },
+                    new DailyRevenue { Date = DateTime.Now.AddDays(-5), Amount = 1350, OrderCount = 48 },
+                    new DailyRevenue { Date = DateTime.Now.AddDays(-4), Amount = 1400, OrderCount = 50 },
+                    new DailyRevenue { Date = DateTime.Now.AddDays(-3), Amount = 1600, OrderCount = 55 },
+                    new DailyRevenue { Date = DateTime.Now.AddDays(-2), Amount = 1800, OrderCount = 62 },
+                    new DailyRevenue { Date = DateTime.Now.AddDays(-1), Amount = 2100, OrderCount = 70 },
+                    new DailyRevenue { Date = DateTime.Now, Amount = 1950, OrderCount = 65 }
+                };
+            }
+
+            return result;
+        }
+
+        public static List<OrderCount> GetOrdersByCategoryData()
+        {
+            var fastFoodCount = 0;
+            var premiumCount = 0;
+            var healthyCount = 0;
+
+            foreach (var order in _completedOrders)
+            {
+                var restaurant = _restaurants?.FirstOrDefault(r => r.Name == order.RestaurantName);
+                if (restaurant != null)
+                {
+                    switch (restaurant.Category)
+                    {
+                        case "Fast Food": fastFoodCount++; break;
+                        case "Premium": premiumCount++; break;
+                        case "Healthy": healthyCount++; break;
+                    }
+                }
+            }
+
+            // If no orders yet, return sample data for demo
+            if (fastFoodCount == 0 && premiumCount == 0 && healthyCount == 0)
+            {
+                return new List<OrderCount>
+                {
+                    new OrderCount { Category = "Fast Food", Count = 450 },
+                    new OrderCount { Category = "Premium", Count = 280 },
+                    new OrderCount { Category = "Healthy", Count = 320 }
+                };
+            }
+
+            return new List<OrderCount>
+            {
+                new OrderCount { Category = "Fast Food", Count = fastFoodCount },
+                new OrderCount { Category = "Premium", Count = premiumCount },
+                new OrderCount { Category = "Healthy", Count = healthyCount }
+            };
+        }
+
         public HomeController()
         {
             InitializeRestaurants();
+            InitializeSampleOrders();
+        }
+
+        private void InitializeSampleOrders()
+        {
+            if (_completedOrders.Count == 0)
+            {
+                // Add sample completed orders for demo
+                _completedOrders.Add(new CompletedOrder
+                {
+                    OrderId = 1001,
+                    OrderDate = DateTime.Now.AddDays(-2),
+                    RestaurantName = "Burger King",
+                    CustomerName = "John Doe",
+                    TotalAmount = 125.50m,
+                    Status = "Completed"
+                });
+                _completedOrders.Add(new CompletedOrder
+                {
+                    OrderId = 1002,
+                    OrderDate = DateTime.Now.AddDays(-1),
+                    RestaurantName = "Sweetgreen",
+                    CustomerName = "Jane Smith",
+                    TotalAmount = 85.75m,
+                    Status = "Completed"
+                });
+                _completedOrders.Add(new CompletedOrder
+                {
+                    OrderId = 1003,
+                    OrderDate = DateTime.Now,
+                    RestaurantName = "Nobu",
+                    CustomerName = "Bob Johnson",
+                    TotalAmount = 245.00m,
+                    Status = "Completed"
+                });
+                _completedOrders.Add(new CompletedOrder
+                {
+                    OrderId = 1004,
+                    OrderDate = DateTime.Now.AddDays(-3),
+                    RestaurantName = "Chick-fil-A",
+                    CustomerName = "Alice Brown",
+                    TotalAmount = 45.50m,
+                    Status = "Completed"
+                });
+                _completedOrders.Add(new CompletedOrder
+                {
+                    OrderId = 1005,
+                    OrderDate = DateTime.Now.AddDays(-2),
+                    RestaurantName = "The Cheesecake Factory",
+                    CustomerName = "Tom Wilson",
+                    TotalAmount = 189.99m,
+                    Status = "Completed"
+                });
+            }
         }
 
         private void InitializeRestaurants()
@@ -110,7 +287,9 @@ namespace CraveCart.Controllers
                 Factory = new FastFoodFactory(),
                 Rating = 4.5,
                 Reviews = 2100,
-                Menu = new List<MenuItem>()
+                Menu = new List<MenuItem>(),
+                IsApproved = true,
+                OwnerEmail = "burgerking@cravecart.com"
             };
             bk.Menu.Add(new MenuItem { Id = 1, Name = "Whopper", Price = 55, Type = "burger", ImageUrl = "/images/menu/whopper.jpg", Description = "Flame-grilled beef patty", IsPopular = true, Customizations = GetBurgerExtras() });
             bk.Menu.Add(new MenuItem { Id = 2, Name = "Chicken Royale", Price = 50, Type = "chicken", ImageUrl = "/images/menu/chicken-royal.jpg", Description = "Crispy chicken burger", IsPopular = true, Customizations = GetChickenExtras() });
@@ -130,7 +309,9 @@ namespace CraveCart.Controllers
                 Factory = new FastFoodFactory(),
                 Rating = 4.7,
                 Reviews = 2500,
-                Menu = new List<MenuItem>()
+                Menu = new List<MenuItem>(),
+                IsApproved = true,
+                OwnerEmail = "chickfila@cravecart.com"
             };
             cfa.Menu.Add(new MenuItem { Id = 5, Name = "Original Chicken Sandwich", Price = 48, Type = "chicken", ImageUrl = "/images/menu/chicken-sandwich.jpg", Description = "Classic chicken sandwich", IsPopular = true, Customizations = GetChickenExtras() });
             cfa.Menu.Add(new MenuItem { Id = 6, Name = "Spicy Chicken Sandwich", Price = 50, Type = "chicken", ImageUrl = "/images/menu/spicyDeluxe.png", Description = "Spicy version", IsPopular = true, Customizations = GetChickenExtras() });
@@ -150,7 +331,9 @@ namespace CraveCart.Controllers
                 Factory = new FastFoodFactory(),
                 Rating = 4.9,
                 Reviews = 3500,
-                Menu = new List<MenuItem>()
+                Menu = new List<MenuItem>(),
+                IsApproved = true,
+                OwnerEmail = "orlandopirates@cravecart.com"
             };
             pirates.Menu.Add(new MenuItem { Id = 9, Name = "Buccaneer Burger", Price = 85, Type = "burger", ImageUrl = "/images/menu/buccaneer.jpg", Description = "Double beef patty with special sea salt sauce", IsPopular = true, Customizations = GetBurgerExtras() });
             pirates.Menu.Add(new MenuItem { Id = 10, Name = "Sea Robber Chicken Wings", Price = 75, Type = "chicken", ImageUrl = "/images/menu/chicken-wings.jpg", Description = "12 spicy wings with pirate sauce", IsPopular = true, Customizations = GetChickenExtras() });
@@ -172,7 +355,9 @@ namespace CraveCart.Controllers
                 Factory = new PremiumFactory(),
                 Rating = 4.8,
                 Reviews = 3200,
-                Menu = new List<MenuItem>()
+                Menu = new List<MenuItem>(),
+                IsApproved = true,
+                OwnerEmail = "liverpool@cravecart.com"
             };
             liverpool.Menu.Add(new MenuItem { Id = 13, Name = "Kop Legend Chicken", Price = 85, Type = "chicken", ImageUrl = "/images/menu/koplegend.png", Description = "Grilled chicken with Anfield seasoning", IsPopular = true, Customizations = GetChickenExtras() });
             liverpool.Menu.Add(new MenuItem { Id = 14, Name = "European Night Pasta", Price = 125, Type = "pasta", ImageUrl = "/images/menu/europasta.png", Description = "Creamy pasta with Italian herbs", IsPopular = true, Customizations = GetPastaExtras() });
@@ -192,7 +377,9 @@ namespace CraveCart.Controllers
                 Factory = new PremiumFactory(),
                 Rating = 4.8,
                 Reviews = 3200,
-                Menu = new List<MenuItem>()
+                Menu = new List<MenuItem>(),
+                IsApproved = true,
+                OwnerEmail = "cheesecakefactory@cravecart.com"
             };
             cheesecake.Menu.Add(new MenuItem { Id = 17, Name = "Chicken Parmesan", Price = 145, Type = "pasta", ImageUrl = "/images/menu/creamy-pastsa.png", Description = "Breaded chicken with pasta", IsPopular = true, Customizations = GetPastaExtras() });
             cheesecake.Menu.Add(new MenuItem { Id = 18, Name = "Grilled Salmon", Price = 165, Type = "fish", ImageUrl = "/images/menu/grilled-salmon.jpg", Description = "Fresh Atlantic salmon", IsPopular = true, Customizations = new List<Customization> { new Customization { Name = "Lemon Butter", Price = 5, Icon = "/images/icons/lemon.png" } } });
@@ -212,7 +399,9 @@ namespace CraveCart.Controllers
                 Factory = new PremiumFactory(),
                 Rating = 4.8,
                 Reviews = 2100,
-                Menu = new List<MenuItem>()
+                Menu = new List<MenuItem>(),
+                IsApproved = true,
+                OwnerEmail = "nobu@cravecart.com"
             };
             nobu.Menu.Add(new MenuItem { Id = 21, Name = "Black Cod Miso", Price = 155, Type = "fish", ImageUrl = "/images/menu/Black-Cod.jpg", Description = "Butterfish marinated in miso", IsPopular = true, Customizations = new List<Customization> { new Customization { Name = "Extra Miso", Price = 5, Icon = "/images/icons/miso.png" } } });
             nobu.Menu.Add(new MenuItem { Id = 22, Name = "Yellowtail Sashimi", Price = 145, Type = "sushi", ImageUrl = "/images/menu/yellowtail-sashimi.jpg", Description = "Fresh yellowtail", IsPopular = true, Customizations = GetSushiExtras() });
@@ -234,7 +423,9 @@ namespace CraveCart.Controllers
                 Factory = new HealthyFactory(),
                 Rating = 4.6,
                 Reviews = 1950,
-                Menu = new List<MenuItem>()
+                Menu = new List<MenuItem>(),
+                IsApproved = true,
+                OwnerEmail = "sweetgreen@cravecart.com"
             };
             sweetgreen.Menu.Add(new MenuItem { Id = 25, Name = "Harvest Bowl", Price = 65, Type = "salad", ImageUrl = "/images/menu/Bowl_Harvest.png", Description = "Kale, sweet potato, chicken", IsPopular = true, Customizations = GetSaladExtras() });
             sweetgreen.Menu.Add(new MenuItem { Id = 26, Name = "Guacamole Greens", Price = 60, Type = "salad", ImageUrl = "/images/menu/guacamole-greens.jpg", Description = "Avocado, chicken, greens", IsPopular = true, Customizations = GetSaladExtras() });
@@ -254,7 +445,9 @@ namespace CraveCart.Controllers
                 Factory = new HealthyFactory(),
                 Rating = 4.7,
                 Reviews = 1700,
-                Menu = new List<MenuItem>()
+                Menu = new List<MenuItem>(),
+                IsApproved = true,
+                OwnerEmail = "truefood@cravecart.com"
             };
             truefood.Menu.Add(new MenuItem { Id = 29, Name = "Ancient Grains Bowl", Price = 70, Type = "bowl", ImageUrl = "/images/menu/ancient-grains.jpg", Description = "Quinoa, sweet potato, kale", IsPopular = true, Customizations = GetSaladExtras() });
             truefood.Menu.Add(new MenuItem { Id = 30, Name = "Turkey Burger", Price = 62, Type = "burger", ImageUrl = "/images/menu/urkey_burger.jpg", Description = "Lean turkey patty", IsPopular = true, Customizations = GetBurgerExtras() });
@@ -274,7 +467,9 @@ namespace CraveCart.Controllers
                 Factory = new HealthyFactory(),
                 Rating = 4.5,
                 Reviews = 1400,
-                Menu = new List<MenuItem>()
+                Menu = new List<MenuItem>(),
+                IsApproved = true,
+                OwnerEmail = "diginn@cravecart.com"
             };
             dig.Menu.Add(new MenuItem { Id = 33, Name = "Farm Bowl", Price = 58, Type = "bowl", ImageUrl = "/images/menu/farm-bowl.jpg", Description = "Roasted vegetables, grains", IsPopular = true, Customizations = GetSaladExtras() });
             dig.Menu.Add(new MenuItem { Id = 34, Name = "Harvest Chicken", Price = 64, Type = "chicken", ImageUrl = "/images/menu/harvest-chicken.jpg", Description = "Grilled chicken breast", IsPopular = true, Customizations = GetChickenExtras() });
@@ -518,8 +713,7 @@ namespace CraveCart.Controllers
             });
         }
 
-        // LOYALTY ENHANCEMENTS
-        [HttpGet]
+        // LOYALTY ENHANCEMENTS        [HttpGet]
         public IActionResult GetLoyaltyDetails()
         {
             string tier = _loyaltyPoints >= 1000 ? "Gold" : _loyaltyPoints >= 500 ? "Silver" : "Bronze";
@@ -574,6 +768,33 @@ namespace CraveCart.Controllers
             var logger = OrderLogger.Instance;
             var items = string.Join(", ", _cart.Select(c => c.ItemName));
             var restaurant = _cart.First().RestaurantName;
+            var orderId = logger.TotalOrders + 1;
+
+            // Create completed order record
+            var newOrder = new CompletedOrder
+            {
+                OrderId = orderId,
+                OrderDate = DateTime.Now,
+                RestaurantName = restaurant,
+                CustomerName = "Customer",
+                TotalAmount = total,
+                Status = "Completed"
+            };
+            _completedOrders.Add(newOrder);
+
+            // Add to active orders
+            var activeOrder = new ActiveOrder
+            {
+                OrderId = orderId,
+                OrderTime = DateTime.Now,
+                RestaurantName = restaurant,
+                CustomerName = "Customer",
+                TotalAmount = total,
+                Status = "New",
+                EstimatedMinutes = 25
+            };
+            _activeOrdersList.Add(activeOrder);
+
             logger.RecordOrder(total, restaurant, items);
 
             var payment = PaymentFactory.Create(paymentMethod);
@@ -585,25 +806,31 @@ namespace CraveCart.Controllers
             notifier.Attach(new RestaurantObserver());
             notifier.Attach(new DriverObserver());
 
-            notifier.Notify($"📦 Order #{logger.TotalOrders} received by {restaurant}");
+            notifier.Notify($"📦 Order #{orderId} received by {restaurant}");
+            activeOrder.Status = "Preparing";
             await Task.Delay(800);
 
             notifier.Notify($"👨‍🍳 {restaurant} is preparing: {items}");
             await Task.Delay(1200);
 
             notifier.Notify($"🚗 Driver assigned to pick up your order");
+            activeOrder.Status = "Ready";
             await Task.Delay(1000);
 
             notifier.Notify($"✅ Meal ready! Driver is picking up");
             await Task.Delay(800);
 
             notifier.Notify($"🚚 Order out for delivery! ETA: 15-20 min");
+            activeOrder.Status = "OutForDelivery";
             await Task.Delay(1000);
 
             notifier.Notify($"📍 Driver is 5 minutes away");
             await Task.Delay(800);
 
             notifier.Notify($"🎉 ORDER DELIVERED! Enjoy your meal!");
+
+            // Remove from active orders
+            _activeOrdersList.Remove(activeOrder);
 
             Console.WriteLine("\n╔═══════════════════════════════════════════════════════════╗");
             Console.WriteLine($"║  ✅ Order Complete!                                      ║");
@@ -623,10 +850,45 @@ namespace CraveCart.Controllers
                 paymentMessage = paymentResult,
                 notifications = new List<string>(),
                 loggerSummary = logger.GetSummary(),
-                orderId = logger.TotalOrders,
+                orderId = orderId,
                 pointsEarned = pointsEarned,
                 totalPoints = _loyaltyPoints
             });
         }
+    }
+
+    // ========== ORDER CLASSES FOR ADMIN/RESTAURANT/DRIVER ACCESS ==========
+    public class CompletedOrder
+    {
+        public int OrderId { get; set; }
+        public DateTime OrderDate { get; set; }
+        public string? RestaurantName { get; set; }
+        public string? CustomerName { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string? Status { get; set; }
+    }
+
+    public class ActiveOrder
+    {
+        public int OrderId { get; set; }
+        public DateTime OrderTime { get; set; }
+        public string? RestaurantName { get; set; }
+        public string? CustomerName { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string? Status { get; set; }
+        public int EstimatedMinutes { get; set; }
+    }
+
+    public class DailyRevenue
+    {
+        public DateTime Date { get; set; }
+        public decimal Amount { get; set; }
+        public int OrderCount { get; set; }
+    }
+
+    public class OrderCount
+    {
+        public string? Category { get; set; }
+        public int Count { get; set; }
     }
 }
