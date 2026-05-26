@@ -10,8 +10,16 @@
             <h1>Order the meals you crave without the clutter.</h1>
             <p>Browse local favorites, premium plates, and lighter bowls in one polished cart experience.</p>
             <div class="hero-actions">
-                <a href="#restaurantsContainer" class="primary-action">Explore restaurants</a>
-                <button type="button" class="secondary-action" onclick="toggleCart()">Open cart</button>
+
+                <a href="#restaurantsContainer" class="primary-action">
+                    Explore restaurants
+                </a>
+
+                <button type="button"
+                        class="secondary-action"
+                        onclick="toggleCart()">
+                    Open cart
+                </button>
             </div>
         </div>
         <div class="hero-visual" aria-hidden="true">
@@ -124,3 +132,29 @@
 <script>
     window.craveCartRestaurants = @Html.Raw(Json.Serialize(Model));
 </script>
+.hero-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.primary-action,
+.secondary-action {
+    background: #ff512f;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 14px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+    display: inline-block;
+}
+
+.primary-action:hover,
+.secondary-action:hover {
+    background: #e64525;
+    transform: translateY(-2px);
+}

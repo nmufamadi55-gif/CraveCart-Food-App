@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-05-26T04:02:02.3208886+02:00",
+  "restaurantName": "Burger King",
+  "startDate": "2026-04-22T00:00:00",
+  "endDate": "2026-05-26T00:00:00",
+  "totalOrders": 3,
+  "totalRevenue": 407,
+  "orders": [
+    {
+      "OrderId": 2010,
+      "OrderTime": "2026-05-22T04:00:03.6988818+02:00",
+      "CustomerName": "Customer 1",
+      "Total": 99,
+      "Status": "OutForDelivery"
+    },
+    {
+      "OrderId": 2011,
+      "OrderTime": "2026-05-21T04:00:03.7023467+02:00",
+      "CustomerName": "Customer 2",
+      "Total": 180,
+      "Status": "Completed"
+    },
+    {
+      "OrderId": 2012,
+      "OrderTime": "2026-05-21T04:00:03.7023726+02:00",
+      "CustomerName": "Customer 3",
+      "Total": 128,
+      "Status": "Preparing"
+    }
+  ]
+}
