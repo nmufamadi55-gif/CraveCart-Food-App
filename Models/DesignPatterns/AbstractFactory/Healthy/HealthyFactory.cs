@@ -18,5 +18,10 @@ namespace CraveCart.Models.AbstractFactory.Healthy
         {
             return new HealthyBranding();
         }
+
+        public object CreateMeal()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

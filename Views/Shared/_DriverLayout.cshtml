@@ -92,7 +92,10 @@
         <div class="nav-user">
             <span>🚚 @ViewBag.DriverName</span>
             <span class="driver-status-badge" id="driverStatusBadge">@ViewBag.DriverStatus</span>
-            <a href="/Driver/Logout" class="logout-btn">Logout</a>
+            <form method="post" action="/Restaurant/Logout" style="display: inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
         </div>
     </nav>
     <div class="main-content">

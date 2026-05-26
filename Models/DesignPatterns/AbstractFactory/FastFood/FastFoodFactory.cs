@@ -18,6 +18,10 @@ namespace CraveCart.Models.AbstractFactory.FastFood
         {
             return new FastFoodBranding();
         }
-    
+
+        public object CreateMeal()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

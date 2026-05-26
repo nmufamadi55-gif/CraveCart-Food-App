@@ -79,7 +79,10 @@
         </div>
         <div class="nav-user">
             <span>🍽️ @ViewBag.RestaurantName</span>
-            <a href="/Restaurant/Logout" class="logout-btn">Logout</a>
+            <form method="post" action="/Restaurant/Logout" style="display: inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
         </div>
     </nav>
     <div class="main-content">
@@ -87,4 +90,6 @@
     </div>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
+
 </html>

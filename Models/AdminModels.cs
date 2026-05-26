@@ -95,6 +95,7 @@ namespace CraveCart.Models.Admin
         public DateTime SubmittedDate { get; set; }
         public DateTime? ReviewedDate { get; set; }
         public double BackgroundCheckScore { get; set; }
+        public string AdminNotes { get; internal set; }
     }
 
     // System Settings

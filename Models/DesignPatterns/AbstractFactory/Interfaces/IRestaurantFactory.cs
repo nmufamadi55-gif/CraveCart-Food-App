@@ -5,6 +5,6 @@
         IMenuItem CreateMenuItem();
         IPackaging CreatePackaging();
         IBranding CreateBranding();
-
+        object CreateMeal();
     }
 }

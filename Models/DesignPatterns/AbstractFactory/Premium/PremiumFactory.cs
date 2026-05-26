@@ -19,5 +19,10 @@ namespace CraveCart.Models.AbstractFactory.Premium
         {
             return new PremiumBranding();
         }
+
+        public object CreateMeal()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -83,7 +83,10 @@
         </div>
         <div class="nav-user">
             <span>👑 Admin</span>
-            <a href="/Admin/Logout" class="logout-btn">Logout</a>
+            <form method="post" action="/Restaurant/Logout" style="display: inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
         </div>
     </nav>
     <div class="main-content">

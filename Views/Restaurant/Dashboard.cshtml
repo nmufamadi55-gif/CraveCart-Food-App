@@ -122,6 +122,25 @@
         function viewOrder(orderId) {
             window.location.href = `/Restaurant/OrderDetails?id=${orderId}`;
         }
+
+        function checkForNewOrders() {
+            $.get('/Restaurant/GetNewOrders', function(orders) {
+                if (orders && orders.length > 0) {
+                    orders.forEach(order => {
+                        showToast(`🔔 New order #${order.orderId} received!`, false);
+                        playNotificationSound();
+                    });
+                    location.reload();
+                }
+            });
+        }
+
+        function playNotificationSound() {
+            var audio = new Audio('/sounds/notification.mp3');
+            audio.play().catch(e => console.log('Sound not supported'));
+        }
+
+        setInterval(checkForNewOrders, 10000);
     </script>
 }
 

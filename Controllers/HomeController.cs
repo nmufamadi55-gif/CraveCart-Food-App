@@ -28,6 +28,12 @@ namespace CraveCart.Controllers
         private static List<CompletedOrder> _completedOrders = new List<CompletedOrder>();
         private static List<ActiveOrder> _activeOrdersList = new List<ActiveOrder>();
 
+        // ========== REAL-TIME ORDER STATUS TRACKING ==========
+        private static Dictionary<int, string> _orderStatuses = new Dictionary<int, string>();
+        private static Dictionary<int, string> _orderDriverNames = new Dictionary<int, string>();
+        private static Dictionary<int, int> _orderETAs = new Dictionary<int, int>();
+        private static Dictionary<int, DateTime> _orderStatusTimes = new Dictionary<int, DateTime>();
+
         // ========== STATIC PROPERTIES FOR ADMIN/RESTAURANT/DRIVER ACCESS ==========
         public static List<Restaurant> GetRestaurants() => _restaurants;
         public static List<CartItem> GetCartItems() => _cart;
@@ -57,7 +63,6 @@ namespace CraveCart.Controllers
         {
             if (!_completedOrders.Any())
             {
-                // Return sample data for demo
                 return new List<object>
                 {
                     new { name = "Burger King", orders = 125, revenue = 6875m, rating = 4.5 },
@@ -90,7 +95,6 @@ namespace CraveCart.Controllers
                 });
             }
 
-            // If no data, return sample data for demo
             if (result.All(r => r.Amount == 0))
             {
                 return new List<DailyRevenue>
@@ -128,7 +132,6 @@ namespace CraveCart.Controllers
                 }
             }
 
-            // If no orders yet, return sample data for demo
             if (fastFoodCount == 0 && premiumCount == 0 && healthyCount == 0)
             {
                 return new List<OrderCount>
@@ -147,6 +150,44 @@ namespace CraveCart.Controllers
             };
         }
 
+        // ========== SYNC METHODS FOR RESTAURANT/DRIVER INTEGRATION ==========
+        public static void UpdateOrderStatus(int orderId, string status)
+        {
+            if (_orderStatuses.ContainsKey(orderId))
+            {
+                _orderStatuses[orderId] = status;
+            }
+            else
+            {
+                _orderStatuses[orderId] = status;
+            }
+            _orderStatusTimes[orderId] = DateTime.Now;
+            Console.WriteLine($"📡 Order #{orderId} status synced: {status} at {DateTime.Now:HH:mm:ss}");
+        }
+
+        public static void UpdateOrderDriver(int orderId, string driverName, int eta)
+        {
+            _orderDriverNames[orderId] = driverName;
+            _orderETAs[orderId] = eta;
+            Console.WriteLine($"📡 Order #{orderId} driver assigned: {driverName}, ETA: {eta}min");
+        }
+
+        public static void CompleteOrder(int orderId)
+        {
+            _orderStatuses[orderId] = "Delivered";
+            var activeOrder = _activeOrdersList.FirstOrDefault(o => o.OrderId == orderId);
+            if (activeOrder != null)
+            {
+                _activeOrdersList.Remove(activeOrder);
+            }
+            Console.WriteLine($"📡 Order #{orderId} marked as delivered");
+        }
+
+        public static string GetOrderStatusStatic(int orderId)
+        {
+            return _orderStatuses.ContainsKey(orderId) ? _orderStatuses[orderId] : "Unknown";
+        }
+
         public HomeController()
         {
             InitializeRestaurants();
@@ -157,7 +198,6 @@ namespace CraveCart.Controllers
         {
             if (_completedOrders.Count == 0)
             {
-                // Add sample completed orders for demo
                 _completedOrders.Add(new CompletedOrder
                 {
                     OrderId = 1001,
@@ -211,7 +251,6 @@ namespace CraveCart.Controllers
             if (_restaurants != null) return;
             _restaurants = new List<Restaurant>();
 
-            // Customizations per food type
             List<Customization> GetBurgerExtras()
             {
                 return new List<Customization>
@@ -273,8 +312,6 @@ namespace CraveCart.Controllers
                 };
             }
 
-            // ========== FAST FOOD RESTAURANTS ================
-
             // 1. Burger King
             var bk = new Restaurant
             {
@@ -289,7 +326,8 @@ namespace CraveCart.Controllers
                 Reviews = 2100,
                 Menu = new List<MenuItem>(),
                 IsApproved = true,
-                OwnerEmail = "burgerking@cravecart.com"
+                OwnerEmail = "burgerking@cravecart.com",
+                IsAcceptingOrders = true
             };
             bk.Menu.Add(new MenuItem { Id = 1, Name = "Whopper", Price = 55, Type = "burger", ImageUrl = "/images/menu/whopper.jpg", Description = "Flame-grilled beef patty", IsPopular = true, Customizations = GetBurgerExtras() });
             bk.Menu.Add(new MenuItem { Id = 2, Name = "Chicken Royale", Price = 50, Type = "chicken", ImageUrl = "/images/menu/chicken-royal.jpg", Description = "Crispy chicken burger", IsPopular = true, Customizations = GetChickenExtras() });
@@ -311,7 +349,8 @@ namespace CraveCart.Controllers
                 Reviews = 2500,
                 Menu = new List<MenuItem>(),
                 IsApproved = true,
-                OwnerEmail = "chickfila@cravecart.com"
+                OwnerEmail = "chickfila@cravecart.com",
+                IsAcceptingOrders = true
             };
             cfa.Menu.Add(new MenuItem { Id = 5, Name = "Original Chicken Sandwich", Price = 48, Type = "chicken", ImageUrl = "/images/menu/chicken-sandwich.jpg", Description = "Classic chicken sandwich", IsPopular = true, Customizations = GetChickenExtras() });
             cfa.Menu.Add(new MenuItem { Id = 6, Name = "Spicy Chicken Sandwich", Price = 50, Type = "chicken", ImageUrl = "/images/menu/spicyDeluxe.png", Description = "Spicy version", IsPopular = true, Customizations = GetChickenExtras() });
@@ -333,15 +372,14 @@ namespace CraveCart.Controllers
                 Reviews = 3500,
                 Menu = new List<MenuItem>(),
                 IsApproved = true,
-                OwnerEmail = "orlandopirates@cravecart.com"
+                OwnerEmail = "orlandopirates@cravecart.com",
+                IsAcceptingOrders = true
             };
             pirates.Menu.Add(new MenuItem { Id = 9, Name = "Buccaneer Burger", Price = 85, Type = "burger", ImageUrl = "/images/menu/buccaneer.jpg", Description = "Double beef patty with special sea salt sauce", IsPopular = true, Customizations = GetBurgerExtras() });
             pirates.Menu.Add(new MenuItem { Id = 10, Name = "Sea Robber Chicken Wings", Price = 75, Type = "chicken", ImageUrl = "/images/menu/chicken-wings.jpg", Description = "12 spicy wings with pirate sauce", IsPopular = true, Customizations = GetChickenExtras() });
             pirates.Menu.Add(new MenuItem { Id = 11, Name = "Treble Winner Pizza", Price = 110, Type = "pizza", ImageUrl = "/images/menu/blackpearl.png", Description = "Pepperoni, olives, and jalapeños", IsPopular = false, Customizations = GetPizzaExtras() });
             pirates.Menu.Add(new MenuItem { Id = 12, Name = "Ghost Ship Nachos", Price = 65, Type = "sides", ImageUrl = "/images/menu/ghost-nachos.png", Description = "Loaded nachos with cheese and salsa", IsPopular = false, Customizations = new List<Customization>() });
             _restaurants.Add(pirates);
-
-            // ========== PREMIUM RESTAURANTS ==========
 
             // 4. LIVERPOOL FC
             var liverpool = new Restaurant
@@ -357,7 +395,8 @@ namespace CraveCart.Controllers
                 Reviews = 3200,
                 Menu = new List<MenuItem>(),
                 IsApproved = true,
-                OwnerEmail = "liverpool@cravecart.com"
+                OwnerEmail = "liverpool@cravecart.com",
+                IsAcceptingOrders = true
             };
             liverpool.Menu.Add(new MenuItem { Id = 13, Name = "Kop Legend Chicken", Price = 85, Type = "chicken", ImageUrl = "/images/menu/koplegend.png", Description = "Grilled chicken with Anfield seasoning", IsPopular = true, Customizations = GetChickenExtras() });
             liverpool.Menu.Add(new MenuItem { Id = 14, Name = "European Night Pasta", Price = 125, Type = "pasta", ImageUrl = "/images/menu/europasta.png", Description = "Creamy pasta with Italian herbs", IsPopular = true, Customizations = GetPastaExtras() });
@@ -379,7 +418,8 @@ namespace CraveCart.Controllers
                 Reviews = 3200,
                 Menu = new List<MenuItem>(),
                 IsApproved = true,
-                OwnerEmail = "cheesecakefactory@cravecart.com"
+                OwnerEmail = "cheesecakefactory@cravecart.com",
+                IsAcceptingOrders = true
             };
             cheesecake.Menu.Add(new MenuItem { Id = 17, Name = "Chicken Parmesan", Price = 145, Type = "pasta", ImageUrl = "/images/menu/creamy-pastsa.png", Description = "Breaded chicken with pasta", IsPopular = true, Customizations = GetPastaExtras() });
             cheesecake.Menu.Add(new MenuItem { Id = 18, Name = "Grilled Salmon", Price = 165, Type = "fish", ImageUrl = "/images/menu/grilled-salmon.jpg", Description = "Fresh Atlantic salmon", IsPopular = true, Customizations = new List<Customization> { new Customization { Name = "Lemon Butter", Price = 5, Icon = "/images/icons/lemon.png" } } });
@@ -401,15 +441,14 @@ namespace CraveCart.Controllers
                 Reviews = 2100,
                 Menu = new List<MenuItem>(),
                 IsApproved = true,
-                OwnerEmail = "nobu@cravecart.com"
+                OwnerEmail = "nobu@cravecart.com",
+                IsAcceptingOrders = true
             };
             nobu.Menu.Add(new MenuItem { Id = 21, Name = "Black Cod Miso", Price = 155, Type = "fish", ImageUrl = "/images/menu/Black-Cod.jpg", Description = "Butterfish marinated in miso", IsPopular = true, Customizations = new List<Customization> { new Customization { Name = "Extra Miso", Price = 5, Icon = "/images/icons/miso.png" } } });
             nobu.Menu.Add(new MenuItem { Id = 22, Name = "Yellowtail Sashimi", Price = 145, Type = "sushi", ImageUrl = "/images/menu/yellowtail-sashimi.jpg", Description = "Fresh yellowtail", IsPopular = true, Customizations = GetSushiExtras() });
             nobu.Menu.Add(new MenuItem { Id = 23, Name = "Sushi Roll Set", Price = 125, Type = "sushi", ImageUrl = "/images/menu/sushi-roll.jpg", Description = "Assorted rolls", IsPopular = false, Customizations = GetSushiExtras() });
             nobu.Menu.Add(new MenuItem { Id = 24, Name = "Rock Shrimp Tempura", Price = 135, Type = "shrimp", ImageUrl = "/images/menu/rock-shrimp.jpg", Description = "Crispy shrimp", IsPopular = false, Customizations = new List<Customization> { new Customization { Name = "Spicy Mayo", Price = 4, Icon = "/images/icons/mayo.png" } } });
             _restaurants.Add(nobu);
-
-            // ========== HEALTHY RESTAURANTS ==========
 
             // 7. Sweetgreen
             var sweetgreen = new Restaurant
@@ -425,7 +464,8 @@ namespace CraveCart.Controllers
                 Reviews = 1950,
                 Menu = new List<MenuItem>(),
                 IsApproved = true,
-                OwnerEmail = "sweetgreen@cravecart.com"
+                OwnerEmail = "sweetgreen@cravecart.com",
+                IsAcceptingOrders = true
             };
             sweetgreen.Menu.Add(new MenuItem { Id = 25, Name = "Harvest Bowl", Price = 65, Type = "salad", ImageUrl = "/images/menu/Bowl_Harvest.png", Description = "Kale, sweet potato, chicken", IsPopular = true, Customizations = GetSaladExtras() });
             sweetgreen.Menu.Add(new MenuItem { Id = 26, Name = "Guacamole Greens", Price = 60, Type = "salad", ImageUrl = "/images/menu/guacamole-greens.jpg", Description = "Avocado, chicken, greens", IsPopular = true, Customizations = GetSaladExtras() });
@@ -447,7 +487,8 @@ namespace CraveCart.Controllers
                 Reviews = 1700,
                 Menu = new List<MenuItem>(),
                 IsApproved = true,
-                OwnerEmail = "truefood@cravecart.com"
+                OwnerEmail = "truefood@cravecart.com",
+                IsAcceptingOrders = true
             };
             truefood.Menu.Add(new MenuItem { Id = 29, Name = "Ancient Grains Bowl", Price = 70, Type = "bowl", ImageUrl = "/images/menu/ancient-grains.jpg", Description = "Quinoa, sweet potato, kale", IsPopular = true, Customizations = GetSaladExtras() });
             truefood.Menu.Add(new MenuItem { Id = 30, Name = "Turkey Burger", Price = 62, Type = "burger", ImageUrl = "/images/menu/urkey_burger.jpg", Description = "Lean turkey patty", IsPopular = true, Customizations = GetBurgerExtras() });
@@ -469,7 +510,8 @@ namespace CraveCart.Controllers
                 Reviews = 1400,
                 Menu = new List<MenuItem>(),
                 IsApproved = true,
-                OwnerEmail = "diginn@cravecart.com"
+                OwnerEmail = "diginn@cravecart.com",
+                IsAcceptingOrders = true
             };
             dig.Menu.Add(new MenuItem { Id = 33, Name = "Farm Bowl", Price = 58, Type = "bowl", ImageUrl = "/images/menu/farm-bowl.jpg", Description = "Roasted vegetables, grains", IsPopular = true, Customizations = GetSaladExtras() });
             dig.Menu.Add(new MenuItem { Id = 34, Name = "Harvest Chicken", Price = 64, Type = "chicken", ImageUrl = "/images/menu/harvest-chicken.jpg", Description = "Grilled chicken breast", IsPopular = true, Customizations = GetChickenExtras() });
@@ -713,7 +755,8 @@ namespace CraveCart.Controllers
             });
         }
 
-        // LOYALTY ENHANCEMENTS        [HttpGet]
+        // LOYALTY ENHANCEMENTS
+        [HttpGet]
         public IActionResult GetLoyaltyDetails()
         {
             string tier = _loyaltyPoints >= 1000 ? "Gold" : _loyaltyPoints >= 500 ? "Silver" : "Bronze";
@@ -756,6 +799,26 @@ namespace CraveCart.Controllers
             return Json(new { success = false, message = $"Need {pointsNeeded} points!" });
         }
 
+        // ========== REAL-TIME ORDER STATUS ==========
+        // Fix the GetOrderStatus method - Change from 'int' to 'int?' for nullable values
+        [HttpGet]
+        public IActionResult GetOrderStatus(int orderId)
+        {
+            if (!_orderStatuses.ContainsKey(orderId))
+            {
+                return Json(new { status = "Not Found", orderId = orderId });
+            }
+
+            return Json(new
+            {
+                orderId = orderId,
+                status = _orderStatuses[orderId],
+                driverName = _orderDriverNames.ContainsKey(orderId) ? _orderDriverNames[orderId] : null,
+                eta = _orderETAs.ContainsKey(orderId) ? (int?)_orderETAs[orderId] : null,  // FIX: Cast to int?
+                timestamp = _orderStatusTimes.ContainsKey(orderId) ? _orderStatusTimes[orderId].ToString("HH:mm:ss") : DateTime.Now.ToString("HH:mm:ss")
+            });
+        }
+
         [HttpPost]
         public async Task<IActionResult> PlaceOrder(string paymentMethod, decimal total)
         {
@@ -763,12 +826,52 @@ namespace CraveCart.Controllers
 
             Console.WriteLine("\n╔═══════════════════════════════════════════════════════════╗");
             Console.WriteLine("║              🔔 ORDER NOTIFICATIONS 🔔                     ║");
+            Console.WriteLine("║         COMPLETE INTEGRATED WORKFLOW                      ║");
             Console.WriteLine("╚═══════════════════════════════════════════════════════════╝\n");
 
             var logger = OrderLogger.Instance;
             var items = string.Join(", ", _cart.Select(c => c.ItemName));
             var restaurant = _cart.First().RestaurantName;
+            var restaurantId = _cart.First().RestaurantId;
             var orderId = logger.TotalOrders + 1;
+            var customerName = "Customer";
+
+            // Initialize order status tracking
+            _orderStatuses[orderId] = "New";
+            _orderStatusTimes[orderId] = DateTime.Now;
+
+            var restaurantObj = _restaurants.FirstOrDefault(r => r.Id == restaurantId);
+            if (restaurantObj == null)
+            {
+                return Json(new { success = false, message = "Restaurant not found" });
+            }
+
+            // STEP 1 & 2: Customer selects restaurant & Factory creates meal
+            Console.WriteLine("📋 STEP 1 & 2: Customer selects restaurant & Factory creates meal");
+            var meal = restaurantObj.Factory.CreateMeal();
+            Console.WriteLine($"   ✅ Restaurant: {restaurant} ({restaurantObj.Category})");
+            Console.WriteLine($"   ✅ Factory created: {meal.GetType().Name}\n");
+
+            // STEP 3: Customer adds customizations (Decorator Pattern)
+            Console.WriteLine("📋 STEP 3: Customer adds customizations (Decorator Pattern)");
+            var customizationDetails = new List<string>();
+            foreach (var item in _cart.SelectMany(c => c.Extras ?? new List<string>()))
+            {
+                customizationDetails.Add(item);
+                Console.WriteLine($"   + Added: {item}");
+            }
+            if (customizationDetails.Count == 0)
+            {
+                Console.WriteLine("   No customizations added");
+            }
+            Console.WriteLine($"   ✅ Final price: R{total}\n");
+
+            // STEP 4: Payment Strategy selected
+            Console.WriteLine("📋 STEP 4: Payment Strategy selected (Strategy Pattern)");
+            var payment = PaymentFactory.Create(paymentMethod);
+            var paymentResult = payment.Pay(total);
+            logger.Log(paymentResult);
+            Console.WriteLine($"   ✅ {paymentResult}\n");
 
             // Create completed order record
             var newOrder = new CompletedOrder
@@ -776,7 +879,7 @@ namespace CraveCart.Controllers
                 OrderId = orderId,
                 OrderDate = DateTime.Now,
                 RestaurantName = restaurant,
-                CustomerName = "Customer",
+                CustomerName = customerName,
                 TotalAmount = total,
                 Status = "Completed"
             };
@@ -788,58 +891,99 @@ namespace CraveCart.Controllers
                 OrderId = orderId,
                 OrderTime = DateTime.Now,
                 RestaurantName = restaurant,
-                CustomerName = "Customer",
+                CustomerName = customerName,
                 TotalAmount = total,
                 Status = "New",
                 EstimatedMinutes = 25
             };
             _activeOrdersList.Add(activeOrder);
 
+            // STEP 5: Singleton Logger records order
+            Console.WriteLine("📋 STEP 5: Singleton Logger records order (Singleton Pattern)");
             logger.RecordOrder(total, restaurant, items);
+            Console.WriteLine($"   📝 Order #{orderId} recorded in logger");
+            Console.WriteLine($"   📊 Current stats: {logger.GetSummary()}\n");
 
-            var payment = PaymentFactory.Create(paymentMethod);
-            var paymentResult = payment.Pay(total);
-            logger.Log(paymentResult);
+            // Create order for Restaurant system
+            var restaurantOrder = new RestaurantOrder
+            {
+                OrderId = orderId,
+                OrderTime = DateTime.Now,
+                RestaurantId = restaurantId,
+                RestaurantName = restaurant,
+                CustomerName = customerName,
+                CustomerAddress = "Customer Address",
+                CustomerPhone = "0812345678",
+                Items = _cart.Select(c => new OrderItemDetail
+                {
+                    Name = c.ItemName,
+                    Quantity = 1,
+                    Price = c.TotalPrice,
+                    Customizations = c.Extras ?? new List<string>()
+                }).ToList(),
+                Subtotal = total - 25,
+                DeliveryFee = 25,
+                Total = total,
+                Status = "New",
+                EstimatedReadyTime = DateTime.Now.AddMinutes(25)
+            };
 
+            // Push order to Restaurant system
+            RestaurantController.AddOrder(restaurantOrder);
+
+            // STEP 6: Restaurant and Driver notified (Observer Pattern)
+            Console.WriteLine("📋 STEP 6: Restaurant and Driver notified (Observer Pattern)");
             var notifier = new OrderNotifier();
             notifier.Attach(new CustomerObserver());
             notifier.Attach(new RestaurantObserver());
             notifier.Attach(new DriverObserver());
 
             notifier.Notify($"📦 Order #{orderId} received by {restaurant}");
+            _orderStatuses[orderId] = "Preparing";
             activeOrder.Status = "Preparing";
             await Task.Delay(800);
 
             notifier.Notify($"👨‍🍳 {restaurant} is preparing: {items}");
             await Task.Delay(1200);
 
-            notifier.Notify($"🚗 Driver assigned to pick up your order");
-            activeOrder.Status = "Ready";
-            await Task.Delay(1000);
+            // Update restaurant order status
+            RestaurantController.UpdateOrderStatusStatic(orderId, "Preparing");
 
             notifier.Notify($"✅ Meal ready! Driver is picking up");
+            _orderStatuses[orderId] = "Ready";
+            activeOrder.Status = "Ready";
+            RestaurantController.UpdateOrderStatusStatic(orderId, "Ready");
             await Task.Delay(800);
 
             notifier.Notify($"🚚 Order out for delivery! ETA: 15-20 min");
+            _orderStatuses[orderId] = "OutForDelivery";
             activeOrder.Status = "OutForDelivery";
+            RestaurantController.UpdateOrderStatusStatic(orderId, "OutForDelivery");
             await Task.Delay(1000);
 
             notifier.Notify($"📍 Driver is 5 minutes away");
             await Task.Delay(800);
 
+            // STEP 7: Customer receives live order updates
+            Console.WriteLine("📋 STEP 7: Customer receives live order updates");
             notifier.Notify($"🎉 ORDER DELIVERED! Enjoy your meal!");
 
-            // Remove from active orders
+            // Update final status
+            _orderStatuses[orderId] = "Delivered";
+            RestaurantController.UpdateOrderStatusStatic(orderId, "Completed");
             _activeOrdersList.Remove(activeOrder);
 
             Console.WriteLine("\n╔═══════════════════════════════════════════════════════════╗");
-            Console.WriteLine($"║  ✅ Order Complete!                                      ║");
+            Console.WriteLine($"║  ✅ ORDER #{orderId} COMPLETE!                            ║");
             Console.WriteLine($"║  📊 {logger.GetSummary()}                               ║");
             Console.WriteLine("╚═══════════════════════════════════════════════════════════╝\n");
 
             var pointsEarned = (int)(total * 0.1m);
             _loyaltyPoints += pointsEarned;
             _pointsEarnedHistory.Add(pointsEarned);
+
+            Console.WriteLine($"⭐ Loyalty points earned: {pointsEarned}");
+            Console.WriteLine($"⭐ Total loyalty points: {_loyaltyPoints}\n");
 
             _cart.Clear();
 
@@ -852,12 +996,16 @@ namespace CraveCart.Controllers
                 loggerSummary = logger.GetSummary(),
                 orderId = orderId,
                 pointsEarned = pointsEarned,
-                totalPoints = _loyaltyPoints
+                totalPoints = _loyaltyPoints,
+                estimatedDelivery = "15-20 minutes",
+                restaurantName = restaurant,
+                items = items,
+                initialStatus = "New"
             });
         }
     }
 
-    // ========== ORDER CLASSES FOR ADMIN/RESTAURANT/DRIVER ACCESS ==========
+    // ========== ORDER CLASSES ==========
     public class CompletedOrder
     {
         public int OrderId { get; set; }
